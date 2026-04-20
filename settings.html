@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HatchAI Settings</title>
+  <style>
+    :root{
+      --orange: #D97706;
+      --dark-orange: #B45309;
+      --black: #111827;
+      --gray: #4B5563;
+      --border: #E5E7EB;
+      --white: #FFFFFF;
+      --bg-soft: #FFF7ED;
+      --green: #16A34A;
+      --red: #DC2626;
+      --blue: #2563EB;
+    }
+
+    @font-face {
+      font-family: 'Inter';
+      src: url('/font/inter-regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Inter';
+      src: url('/font/inter-semibold.woff2') format('woff2');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+
+    body {
+      background: var(--white);
+      color: var(--black);
+    }
+
+    .navbar {
+      width: 100%;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .nav-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: relative;
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .logo-wrap img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--black);
+      white-space: nowrap;
+    }
+
+    .logo span {
+      color: var(--orange);
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .nav-links li a {
+      text-decoration: none;
+      font-size: 14px;
+      color: var(--gray);
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 10px;
+      transition: 0.2s ease;
+      display: block;
+    }
+
+    .nav-links li a:hover {
+      background: var(--bg-soft);
+      color: var(--orange);
+    }
+
+    .nav-links li a.active {
+      background: var(--orange);
+      color: var(--white);
+    }
+
+    .nav-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--gray);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .hamburger {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      border-radius: 10px;
+      cursor: pointer;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      padding: 0;
+    }
+
+    .hamburger span {
+      width: 20px;
+      height: 2px;
+      background: var(--black);
+      border-radius: 999px;
+      transition: 0.3s;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    .settings-page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 20px 32px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .title h1 {
+      font-size: 30px;
+      font-weight: 600;
+      color: var(--black);
+      margin-bottom: 6px;
+    }
+
+    .title p {
+      font-size: 14px;
+      color: var(--gray);
+    }
+
+    .badge {
+      background: var(--bg-soft);
+      color: var(--orange);
+      border: 1px solid #FED7AA;
+      padding: 9px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 4px 16px rgba(17, 24, 39, 0.05);
+    }
+
+    .wide-card {
+      grid-column: span 2;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--black);
+      margin-bottom: 8px;
+    }
+
+    .subtext {
+      font-size: 14px;
+      color: var(--gray);
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+
+    .setting-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .setting-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .setting-label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .setting-label strong {
+      font-size: 15px;
+      color: var(--black);
+      font-weight: 600;
+    }
+
+    .setting-label span {
+      font-size: 13px;
+      color: var(--gray);
+    }
+
+    .switch {
+      position: relative;
+      width: 54px;
+      height: 30px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      background: #D1D5DB;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .slider::before {
+      content: "";
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      left: 3px;
+      top: 3px;
+      background: var(--white);
+      border-radius: 50%;
+      transition: 0.3s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .switch input:checked + .slider {
+      background: var(--orange);
+    }
+
+    .switch input:checked + .slider::before {
+      transform: translateX(24px);
+    }
+
+    .input-box,
+    .select-box,
+    .textarea-box {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 14px;
+      color: var(--black);
+      outline: none;
+      background: var(--white);
+      margin-top: 8px;
+    }
+
+    .textarea-box {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .input-box:focus,
+    .select-box:focus,
+    .textarea-box:focus {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.12);
+    }
+
+    .field-group {
+      margin-bottom: 16px;
+    }
+
+    .field-group label {
+      font-size: 14px;
+      color: var(--black);
+      font-weight: 600;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--orange);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background: var(--dark-orange);
+    }
+
+    .btn-soft {
+      background: var(--bg-soft);
+      color: var(--orange);
+      border: 1px solid #FED7AA;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 8px;
+    }
+
+    .info-box {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      background: #fffdfa;
+    }
+
+    .info-box p {
+      font-size: 13px;
+      color: var(--gray);
+      margin-bottom: 8px;
+    }
+
+    .info-box h3 {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--black);
+    }
+
+    #saveStatus {
+      margin-top: 16px;
+      font-size: 14px;
+      color: var(--gray);
+    }
+
+    @media (max-width: 900px) {
+      .settings-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .wide-card {
+        grid-column: span 1;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .hamburger {
+        display: flex;
+      }
+
+      .nav-links {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 14px;
+        right: 14px;
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: 0 12px 30px rgba(17, 24, 39, 0.10);
+        padding: 10px;
+        gap: 8px;
+        flex-direction: column;
+        align-items: stretch;
+        display: none;
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .settings-page {
+        padding: 18px 14px 28px;
+      }
+
+      .nav-container {
+        padding: 14px;
+      }
+
+      .title h1 {
+        font-size: 24px;
+      }
+
+      .badge {
+        width: 100%;
+        text-align: center;
+      }
+
+      .setting-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .btn-row {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo-wrap">
+        <img src="hatchai-logo.webp" alt="HatchAI Logo">
+        <div class="logo">Hatch<span>AI</span></div>
+      </div>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="control.html">Control</a></li>
+        <li><a href="prediction.html">Prediction</a></li>
+        <li><a href="log.html">Logs</a></li>
+        <li><a href="settings.html" class="active">Settings</a></li>
+      </ul>
+
+      <div class="nav-status">
+        <span class="dot"></span>
+        <span id="wifiStatus">Online</span>
+      </div>
+
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <main class="settings-page">
+    <div class="topbar">
+      <div class="title">
+        <h1>System Settings</h1>
+        <p>Manage incubator preferences, thresholds, notifications, and device settings</p>
+      </div>
+      <div class="badge">Configuration Panel</div>
+    </div>
+
+    <div class="settings-grid">
+      <div class="card">
+        <div class="card-title">General Preferences</div>
+        <div class="subtext">Set default system values and environment preferences.</div>
+
+        <div class="field-group">
+          <label for="targetTemperature">Target Temperature (°C)</label>
+          <input type="number" id="targetTemperature" class="input-box" value="37.8" step="0.1">
+        </div>
+
+        <div class="field-group">
+          <label for="targetHumidity">Target Humidity (%)</label>
+          <input type="number" id="targetHumidity" class="input-box" value="58" step="1">
+        </div>
+
+        <div class="field-group">
+          <label for="turningInterval">Egg Turning Interval</label>
+          <select id="turningInterval" class="select-box">
+            <option>Every 1 hour</option>
+            <option selected>Every 2 hours</option>
+            <option>Every 4 hours</option>
+            <option>Every 6 hours</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label for="hatchDateNote">Hatch Notes</label>
+          <textarea id="hatchDateNote" class="textarea-box" placeholder="Add notes about hatch schedule or incubation setup..."></textarea>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">System Toggles</div>
+        <div class="subtext">Enable or disable app and alert behaviors.</div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            <strong>Temperature Alerts</strong>
+            <span>Notify when temperature goes outside the threshold</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="tempAlertToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            <strong>Humidity Alerts</strong>
+            <span>Notify when humidity becomes unstable</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="humidityAlertToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            <strong>Auto Sync</strong>
+            <span>Refresh live readings automatically from device</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="autoSyncToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-label">
+            <strong>Sound Notification</strong>
+            <span>Play sound when warnings or actions are triggered</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="soundToggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="card wide-card">
+        <div class="card-title">Device Information</div>
+        <div class="subtext">Quick reference for the connected incubator device.</div>
+
+        <div class="info-grid">
+          <div class="info-box">
+            <p>Device Name</p>
+            <h3 id="deviceName">ESP32 HatchAI</h3>
+          </div>
+          <div class="info-box">
+            <p>Firmware</p>
+            <h3 id="firmwareVersion">v1.0.2</h3>
+          </div>
+          <div class="info-box">
+            <p>Wi-Fi Status</p>
+            <h3 id="deviceWifi">Connected</h3>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+          <button class="btn btn-soft" onclick="resetSettings()">Reset Defaults</button>
+        </div>
+
+        <div id="saveStatus">No changes saved yet.</div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const hamburger = document.getElementById("hamburger");
+    const navLinks = document.getElementById("navLinks");
+
+    hamburger.addEventListener("click", () => {
+      hamburger.classList.toggle("active");
+      navLinks.classList.toggle("active");
+    });
+
+    document.querySelectorAll("#navLinks a").forEach(link => {
+      link.addEventListener("click", () => {
+        hamburger.classList.remove("active");
+        navLinks.classList.remove("active");
+      });
+    });
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 700) {
+        hamburger.classList.remove("active");
+        navLinks.classList.remove("active");
+      }
+    });
+
+    function saveSettings() {
+      document.getElementById("saveStatus").textContent = "Settings saved successfully.";
+      document.getElementById("saveStatus").style.color = "#16A34A";
+    }
+
+    function resetSettings() {
+      document.getElementById("targetTemperature").value = "37.8";
+      document.getElementById("targetHumidity").value = "58";
+      document.getElementById("turningInterval").selectedIndex = 1;
+      document.getElementById("hatchDateNote").value = "";
+      document.getElementById("tempAlertToggle").checked = true;
+      document.getElementById("humidityAlertToggle").checked = true;
+      document.getElementById("autoSyncToggle").checked = true;
+      document.getElementById("soundToggle").checked = false;
+
+      document.getElementById("saveStatus").textContent = "Settings reset to default values.";
+      document.getElementById("saveStatus").style.color = "#2563EB";
+    }
+  </script>
+</body>
+</html>

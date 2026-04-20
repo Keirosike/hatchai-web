@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HatchAI Prediction</title>
+  <img src="hatchai-logo.webp" alt="HatchAI Logo">
+  <style>
+    :root{
+      --orange: #D97706;
+      --dark-orange: #B45309;
+      --black: #111827;
+      --gray: #4B5563;
+      --border: #E5E7EB;
+      --white: #FFFFFF;
+      --bg-soft: #FFF7ED;
+      --green: #16A34A;
+      --red: #DC2626;
+      --blue-soft: #EFF6FF;
+      --blue: #2563EB;
+    }
+
+    @font-face {
+      font-family: 'Inter';
+      src: url('/font/inter-regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Inter';
+      src: url('/font/inter-semibold.woff2') format('woff2');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+
+    body {
+      background: var(--white);
+      color: var(--black);
+    }
+
+    .navbar {
+      width: 100%;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .nav-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: relative;
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .logo-wrap img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--black);
+      white-space: nowrap;
+    }
+
+    .logo span {
+      color: var(--orange);
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .nav-links li a {
+      text-decoration: none;
+      font-size: 14px;
+      color: var(--gray);
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 10px;
+      transition: 0.2s ease;
+      display: block;
+    }
+
+    .nav-links li a:hover {
+      background: var(--bg-soft);
+      color: var(--orange);
+    }
+
+    .nav-links li a.active {
+      background: var(--orange);
+      color: var(--white);
+    }
+
+    .nav-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--gray);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .hamburger {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      border-radius: 10px;
+      cursor: pointer;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      padding: 0;
+    }
+
+    .hamburger span {
+      width: 20px;
+      height: 2px;
+      background: var(--black);
+      border-radius: 999px;
+      transition: 0.3s;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    .prediction-page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 20px 32px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .title h1 {
+      font-size: 30px;
+      font-weight: 600;
+      color: var(--black);
+      margin-bottom: 6px;
+    }
+
+    .title p {
+      font-size: 14px;
+      color: var(--gray);
+    }
+
+    .badge {
+      background: var(--bg-soft);
+      color: var(--orange);
+      border: 1px solid #FED7AA;
+      padding: 9px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, var(--orange), var(--dark-orange));
+      color: var(--white);
+      border-radius: 22px;
+      padding: 26px;
+      margin-bottom: 18px;
+      box-shadow: 0 10px 30px rgba(180, 83, 9, 0.18);
+    }
+
+    .hero-card p {
+      color: rgba(255,255,255,0.9);
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .hero-value {
+      font-size: 44px;
+      font-weight: 600;
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+
+    .hero-sub {
+      font-size: 15px;
+      color: rgba(255,255,255,0.92);
+      line-height: 1.5;
+    }
+
+    .prediction-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 4px 16px rgba(17, 24, 39, 0.05);
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--black);
+      margin-bottom: 8px;
+    }
+
+    .subtext {
+      font-size: 14px;
+      color: var(--gray);
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+
+    .insight-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .insight-list li {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      background: #fffdfa;
+    }
+
+    .insight-list strong {
+      display: block;
+      font-size: 15px;
+      color: var(--black);
+      margin-bottom: 6px;
+    }
+
+    .insight-list span {
+      font-size: 14px;
+      color: var(--gray);
+      line-height: 1.5;
+    }
+
+    .metric-boxes {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .metric {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      background: var(--bg-soft);
+    }
+
+    .metric p {
+      font-size: 13px;
+      color: var(--gray);
+      margin-bottom: 8px;
+    }
+
+    .metric h3 {
+      font-size: 24px;
+      color: var(--black);
+      font-weight: 600;
+    }
+
+    .timeline {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .timeline-step {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      background: var(--white);
+      text-align: center;
+    }
+
+    .timeline-step .day {
+      font-size: 13px;
+      color: var(--orange);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .timeline-step .stage {
+      font-size: 15px;
+      color: var(--black);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .timeline-step .note {
+      font-size: 13px;
+      color: var(--gray);
+      line-height: 1.5;
+    }
+
+    .status-chip {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+
+    .status-good {
+      background: #DCFCE7;
+      color: var(--green);
+    }
+
+    .status-watch {
+      background: #DBEAFE;
+      color: var(--blue);
+    }
+
+    @media (max-width: 700px) {
+      .hamburger {
+        display: flex;
+      }
+
+      .nav-links {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 14px;
+        right: 14px;
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: 0 12px 30px rgba(17, 24, 39, 0.10);
+        padding: 10px;
+        gap: 8px;
+        flex-direction: column;
+        align-items: stretch;
+        display: none;
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .prediction-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .timeline {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .prediction-page {
+        padding: 18px 14px 28px;
+      }
+
+      .nav-container {
+        padding: 14px;
+      }
+
+      .title h1 {
+        font-size: 24px;
+      }
+
+      .hero-value {
+        font-size: 34px;
+      }
+
+      .badge {
+        width: 100%;
+        text-align: center;
+      }
+
+      .timeline {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo-wrap">
+        <img src="hatchai-logo.webp" alt="HatchAI Logo">
+        <div class="logo">Hatch<span>AI</span></div>
+      </div>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="control.html">Control</a></li>
+        <li><a href="prediction.html" class="active">Prediction</a></li>
+        <li><a href="log.html">Logs</a></li>
+        <li><a href="settings.html">Settings</a></li>
+      </ul>
+
+      <div class="nav-status">
+        <span class="dot"></span>
+        <span id="wifiStatus">Online</span>
+      </div>
+
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <main class="prediction-page">
+    <div class="topbar">
+      <div class="title">
+        <h1>Hatch Prediction</h1>
+        <p>Estimated hatch timing and incubation progress overview</p>
+      </div>
+      <div class="badge">AI Forecast Panel</div>
+    </div>
+
+    <div class="hero-card">
+      <p>Predicted Outcome</p>
+      <div class="hero-value" id="predictedDay">Day 21</div>
+      <div class="hero-sub" id="predictedDate">Estimated hatch date: May 02, 2026</div>
+      <div class="status-chip status-good">Healthy incubation trend detected</div>
+    </div>
+
+    <div class="prediction-grid">
+      <div class="card">
+        <div class="card-title">Prediction Insights</div>
+        <div class="subtext">Current environmental conditions suggest normal embryo development and on-schedule hatch timing.</div>
+
+        <ul class="insight-list">
+          <li>
+            <strong>Temperature Stability</strong>
+            <span id="tempInsight">Temperature remains within the ideal incubation range.</span>
+          </li>
+          <li>
+            <strong>Humidity Behavior</strong>
+            <span id="humidityInsight">Humidity pattern supports healthy moisture retention.</span>
+          </li>
+          <li>
+            <strong>Turning Schedule</strong>
+            <span id="turningInsight">Egg rotation intervals appear consistent and effective.</span>
+          </li>
+          <li>
+            <strong>Risk Level</strong>
+            <span id="riskInsight">No major anomalies detected from recent readings.</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Forecast Metrics</div>
+        <div class="subtext">Live prediction values based on current data.</div>
+
+        <div class="metric-boxes">
+          <div class="metric">
+            <p>Hatch Confidence</p>
+            <h3 id="confidenceValue">94%</h3>
+          </div>
+          <div class="metric">
+            <p>Estimated Remaining Time</p>
+            <h3 id="remainingValue">5 Days</h3>
+          </div>
+          <div class="metric">
+            <p>Current Incubation Stage</p>
+            <h3 id="stageValue">Late Development</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 18px;">
+      <div class="card-title">Incubation Timeline</div>
+      <div class="subtext">Simple stage checkpoints for monitoring progress.</div>
+
+      <div class="timeline">
+        <div class="timeline-step">
+          <div class="day">Day 1–7</div>
+          <div class="stage">Early Stage</div>
+          <div class="note">Initial embryo formation and heat stabilization.</div>
+        </div>
+        <div class="timeline-step">
+          <div class="day">Day 8–14</div>
+          <div class="stage">Growth Stage</div>
+          <div class="note">Internal development accelerates under stable conditions.</div>
+        </div>
+        <div class="timeline-step">
+          <div class="day">Day 15–18</div>
+          <div class="stage">Preparation</div>
+          <div class="note">Embryo matures and prepares for final hatch phase.</div>
+        </div>
+        <div class="timeline-step">
+          <div class="day">Day 19–21</div>
+          <div class="stage">Hatching Window</div>
+          <div class="note">Expected hatch period if conditions remain optimal.</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const hamburger = document.getElementById("hamburger");
+    const navLinks = document.getElementById("navLinks");
+
+    hamburger.addEventListener("click", () => {
+      hamburger.classList.toggle("active");
+      navLinks.classList.toggle("active");
+    });
+
+    document.querySelectorAll("#navLinks a").forEach(link => {
+      link.addEventListener("click", () => {
+        hamburger.classList.remove("active");
+        navLinks.classList.remove("active");
+      });
+    });
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 700) {
+        hamburger.classList.remove("active");
+        navLinks.classList.remove("active");
+      }
+    });
+
+    function loadPredictionData() {
+      const sample = {
+        predictedDay: "Day 21",
+        predictedDate: "Estimated hatch date: May 02, 2026",
+        confidence: "94%",
+        remaining: "5 Days",
+        stage: "Late Development",
+        tempInsight: "Temperature remains within the ideal incubation range.",
+        humidityInsight: "Humidity pattern supports healthy moisture retention.",
+        turningInsight: "Egg rotation intervals appear consistent and effective.",
+        riskInsight: "No major anomalies detected from recent readings."
+      };
+
+      document.getElementById("predictedDay").textContent = sample.predictedDay;
+      document.getElementById("predictedDate").textContent = sample.predictedDate;
+      document.getElementById("confidenceValue").textContent = sample.confidence;
+      document.getElementById("remainingValue").textContent = sample.remaining;
+      document.getElementById("stageValue").textContent = sample.stage;
+      document.getElementById("tempInsight").textContent = sample.tempInsight;
+      document.getElementById("humidityInsight").textContent = sample.humidityInsight;
+      document.getElementById("turningInsight").textContent = sample.turningInsight;
+      document.getElementById("riskInsight").textContent = sample.riskInsight;
+    }
+
+    loadPredictionData();
+  </script>
+</body>
+</html>

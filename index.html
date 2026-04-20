@@ -1,41 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HatchAI Login</title>
-<link rel="icon" href="fortitle.webp" type="image/webp">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HatchAI Login</title>
+  <link rel="icon" href="fortitle.webp" type="image/webp" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-<div class="container">
+  <div class="container">
     <div id="header">
-        <img src="hatchai-logo.webp" alt="" id="header-image">
-        <h1>Hatch<span id="spanAI">AI</span></h1>
-
+      <img src="hatchai-logo.webp" alt="HatchAI Logo" id="header-image" />
+      <h1>Hatch<span id="spanAI">AI</span></h1>
     </div>
-    
+
     <p>Incubator Control Login</p>
 
-    <form action="/login" method="POST">
-        <div class="input-group">
-            <label>Username</label>
-            <input type="text" name="username" required>
-        </div>
+    <form id="loginForm" method="POST">
+      <div class="input-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required />
+      </div>
 
-        <div class="input-group">
-            <label>Password</label>
-            <input type="password" name="password" required>
-        </div>
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required />
+      </div>
 
-        <button type="submit">Login</button>
+      <button type="submit">Login</button>
+      <p id="status" class="status"></p>
     </form>
 
     <div class="footer">
-        ESP32 Local Dashboard
+      ESP32 Local Dashboard
     </div>
-</div>
+  </div>
 
+  <script src="script.js"></script>
 </body>
 </html>

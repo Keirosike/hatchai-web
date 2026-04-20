@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hatchai Dashboard</title>
+   <link rel="icon" href="fortitle.webp" type="image/webp" />
+  <style>
+    :root{
+      --orange: #D97706;
+      --dark-orange: #B45309;
+      --black: #111827;
+      --gray: #4B5563;
+      --border: #E5E7EB;
+      --white: #FFFFFF;
+      --bg-soft: #FFF7ED;
+      --green: #16A34A;
+      --red: #DC2626;
+    }
+
+    @font-face {
+      font-family: 'Inter';
+      src: url('/font/inter-regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Inter';
+      src: url('/font/inter-semibold.woff2') format('woff2');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+
+    body {
+      background: var(--white);
+      color: var(--black);
+    }
+
+    .navbar {
+      width: 100%;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .nav-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--black);
+    }
+
+    .logo span {
+      color: var(--orange);
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .nav-links li a {
+      text-decoration: none;
+      font-size: 14px;
+      color: var(--gray);
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 10px;
+      transition: 0.2s ease;
+    }
+
+    .nav-links li a:hover {
+      background: var(--bg-soft);
+      color: var(--orange);
+    }
+
+    .nav-links li a.active {
+      background: var(--orange);
+      color: var(--white);
+    }
+
+    .nav-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--gray);
+      font-weight: 600;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dashboard {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 20px 32px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .title h1 {
+      font-size: 30px;
+      font-weight: 600;
+      color: var(--black);
+      margin-bottom: 6px;
+    }
+
+    .title p {
+      font-size: 14px;
+      color: var(--gray);
+    }
+
+    .badge {
+      background: var(--bg-soft);
+      color: var(--orange);
+      border: 1px solid #FED7AA;
+      padding: 9px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 4px 16px rgba(17, 24, 39, 0.05);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      color: var(--gray);
+      font-weight: 600;
+    }
+
+    .icon-box {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: var(--bg-soft);
+      color: var(--orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .value {
+      font-size: 34px;
+      font-weight: 600;
+      color: var(--black);
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+
+    .value-small {
+      font-size: 26px;
+    }
+
+    .subtext {
+      font-size: 14px;
+      color: var(--gray);
+      line-height: 1.5;
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    .status-on,
+    .status-normal,
+    .status-ok {
+      background: #DCFCE7;
+      color: var(--green);
+    }
+
+    .status-off,
+    .status-alert {
+      background: #FEE2E2;
+      color: var(--red);
+    }
+
+    .wide-card {
+      grid-column: span 3;
+      background: linear-gradient(135deg, var(--orange), var(--dark-orange));
+      color: var(--white);
+      border: none;
+      padding: 24px;
+    }
+
+    .wide-card .card-title,
+    .wide-card .subtext {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .prediction-value {
+      font-size: 42px;
+      font-weight: 600;
+      margin: 10px 0 8px;
+      line-height: 1.1;
+    }
+
+    .chart-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .chart-card canvas {
+      width: 100%;
+      height: 220px;
+      display: block;
+      margin-top: 12px;
+      border-radius: 12px;
+      background: var(--white);
+    }
+
+    .chart-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--orange);
+      background: var(--bg-soft);
+      border: 1px solid #FED7AA;
+      padding: 6px 10px;
+      border-radius: 999px;
+    }
+
+    .bottom-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .mini-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .mini-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--gray);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    .mini-list li:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .mini-list strong {
+      color: var(--black);
+      font-weight: 600;
+      text-align: right;
+    }
+
+ .logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-wrap img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--black);
+}
+
+.logo span {
+  color: var(--orange);
+}
+
+/* Hamburger button */
+.hamburger {
+  display: none;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  border-radius: 10px;
+  cursor: pointer;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.hamburger span {
+  width: 20px;
+  height: 2px;
+  background: var(--black);
+  transition: 0.3s;
+}
+
+/* Animation to X */
+.hamburger.active span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Mobile menu */
+@media (max-width: 700px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-links {
+   position: absolute;
+        top: calc(100% + 8px);
+        left: 14px;
+        right: 14px;
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: 0 12px 30px rgba(17, 24, 39, 0.10);
+        padding: 10px;
+        gap: 8px;
+        flex-direction: column;
+        align-items: stretch;
+        display: none;
+  }
+
+  .nav-links.active {
+    display: flex;
+  }
+}
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .wide-card {
+        grid-column: span 2;
+      }
+
+      .chart-section,
+      .bottom-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .nav-links {
+        display: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .dashboard {
+        padding: 18px 14px 28px;
+      }
+
+      .nav-container {
+        padding: 14px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .wide-card {
+        grid-column: span 1;
+      }
+
+      .title h1 {
+        font-size: 24px;
+      }
+
+      .value {
+        font-size: 28px;
+      }
+
+      .value-small {
+        font-size: 22px;
+      }
+
+      .prediction-value {
+        font-size: 32px;
+      }
+
+      .badge {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo-wrap">
+        <img src="hatchai-logo.webp" alt="HatchAI Logo">
+        <div class="logo">Hatch<span>AI</span></div>
+      </div>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="dashboard.html" class="active">Dashboard</a></li>
+        <li><a href="control.html">Control</a></li>
+        <li><a href="prediction.html">Prediction</a></li>
+        <li><a href="log.html">Logs</a></li>
+        <li><a href="settings.html">Settings</a></li>
+      </ul>
+
+      <div class="nav-status">
+        <span class="dot"></span>
+        <span id="wifiStatus">Online</span>
+      </div>
+
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
+        <span>-</span>
+        <span>-</span>
+        <span>-</span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="dashboard">
+    <div class="topbar">
+      <div class="title">
+        <h1>Incubator Dashboard</h1>
+        <p>Real-time monitoring and control overview</p>
+      </div>
+      <div class="badge" id="lastUpdated">Last updated: 10:42 AM</div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Current Temperature</div>
+          <div class="icon-box">T</div>
+        </div>
+        <div class="value" id="tempValue">37.8°C</div>
+        <div class="subtext">Within optimal incubation range</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Current Humidity</div>
+          <div class="icon-box">H</div>
+        </div>
+        <div class="value" id="humidityValue">58%</div>
+        <div class="subtext">Stable humidity detected</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Relay / Bulb Status</div>
+          <div class="icon-box">R</div>
+        </div>
+        <div class="value value-small" id="relayValue">Heating ON</div>
+        <div class="status-pill status-on" id="relayBadge">Bulb Active</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Motor Status</div>
+          <div class="icon-box">M</div>
+        </div>
+        <div class="value value-small" id="motorValue">Idle</div>
+        <div class="subtext" id="motorSubtext">Next egg turning in 1 hr 20 min</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Alert Status</div>
+          <div class="icon-box">!</div>
+        </div>
+        <div class="value value-small" id="alertValue">Normal</div>
+        <div class="status-pill status-normal" id="alertBadge">No anomalies</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">System State</div>
+          <div class="icon-box">S</div>
+        </div>
+        <div class="value value-small" id="systemValue">Running</div>
+        <div class="subtext">ESP32, sensor, relay, and motor active</div>
+      </div>
+
+      <div class="card wide-card">
+        <div class="card-title">Predicted Hatch Day</div>
+        <div class="prediction-value" id="hatchDayValue">Day 21</div>
+        <div class="subtext" id="hatchDateValue">Estimated hatch date: May 02, 2026</div>
+      </div>
+    </div>
+
+    <div class="chart-section">
+      <div class="card chart-card">
+        <div class="card-header">
+          <div class="card-title">Temperature Trend</div>
+          <div class="chart-label">Live</div>
+        </div>
+        <canvas id="tempChart" width="600" height="220"></canvas>
+      </div>
+
+      <div class="card chart-card">
+        <div class="card-header">
+          <div class="card-title">Humidity Trend</div>
+          <div class="chart-label">Live</div>
+        </div>
+        <canvas id="humidityChart" width="600" height="220"></canvas>
+      </div>
+    </div>
+
+    <div class="bottom-row">
+      <div class="card">
+        <div class="card-title">Quick Summary</div>
+        <ul class="mini-list">
+          <li><span>Temperature trend</span> <strong id="summaryTemp">Stable</strong></li>
+          <li><span>Humidity trend</span> <strong id="summaryHumidity">Normal</strong></li>
+          <li><span>Relay activity</span> <strong id="summaryRelay">Automatic</strong></li>
+          <li><span>Egg turning</span> <strong id="summaryTurning">Enabled</strong></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Recent Status</div>
+        <ul class="mini-list">
+          <li><span>Last egg turn</span> <strong id="lastTurnValue">09:20 AM</strong></li>
+          <li><span>Last anomaly</span> <strong id="lastAnomalyValue">None</strong></li>
+          <li><span>Sensor reading</span> <strong id="sensorStatusValue">Connected</strong></li>
+          <li><span>Wi-Fi status</span> <strong id="wifiValue">Online</strong></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js">
+   
+  </script>
+
+  <script>const hamburger = document.getElementById("hamburger");
+const navLinks = document.getElementById("navLinks");
+
+hamburger.addEventListener("click", () => {
+  hamburger.classList.toggle("active");
+  navLinks.classList.toggle("active");
+});
+
+/* Close menu when clicking a link */
+document.querySelectorAll("#navLinks a").forEach(link => {
+  link.addEventListener("click", () => {
+    hamburger.classList.remove("active");
+    navLinks.classList.remove("active");
+  });
+});
+
+/* Reset when resizing to desktop */
+window.addEventListener("resize", () => {
+  if (window.innerWidth > 700) {
+    hamburger.classList.remove("active");
+    navLinks.classList.remove("active");
+  }
+});</script>
+</body>
+</html>

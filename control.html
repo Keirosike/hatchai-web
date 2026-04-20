@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HatchAI Control</title>
+   <link rel="icon" href="fortitle.webp" type="image/webp" />
+  <style>
+    :root{
+      --orange: #D97706;
+      --dark-orange: #B45309;
+      --black: #111827;
+      --gray: #4B5563;
+      --border: #E5E7EB;
+      --white: #FFFFFF;
+      --bg-soft: #FFF7ED;
+      --green: #16A34A;
+      --red: #DC2626;
+    }
+
+    @font-face {
+      font-family: 'Inter';
+      src: url('/font/inter-regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Inter';
+      src: url('/font/inter-semibold.woff2') format('woff2');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+
+    body {
+      background: var(--white);
+      color: var(--black);
+    }
+
+    .navbar {
+      width: 100%;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .nav-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: relative;
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .logo-wrap img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--black);
+      white-space: nowrap;
+    }
+
+    .logo span {
+      color: var(--orange);
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .nav-links li a {
+      text-decoration: none;
+      font-size: 14px;
+      color: var(--gray);
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 10px;
+      transition: 0.2s ease;
+      display: block;
+    }
+
+    .nav-links li a:hover {
+      background: var(--bg-soft);
+      color: var(--orange);
+    }
+
+    .nav-links li a.active {
+      background: var(--orange);
+      color: var(--white);
+    }
+
+    .nav-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--gray);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .hamburger {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      border-radius: 10px;
+      cursor: pointer;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      padding: 0;
+    }
+
+    .hamburger span {
+      width: 20px;
+      height: 2px;
+      background: var(--black);
+      border-radius: 999px;
+      transition: 0.3s;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    .control-page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 20px 32px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .title h1 {
+      font-size: 30px;
+      font-weight: 600;
+      color: var(--black);
+      margin-bottom: 6px;
+    }
+
+    .title p {
+      font-size: 14px;
+      color: var(--gray);
+    }
+
+    .badge {
+      background: var(--bg-soft);
+      color: var(--orange);
+      border: 1px solid #FED7AA;
+      padding: 9px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .control-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 4px 16px rgba(17, 24, 39, 0.05);
+    }
+
+    .wide-card {
+      grid-column: span 2;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--black);
+      margin-bottom: 8px;
+    }
+
+    .subtext {
+      font-size: 14px;
+      color: var(--gray);
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+
+    .control-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .control-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .control-label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .control-label strong {
+      font-size: 15px;
+      color: var(--black);
+      font-weight: 600;
+    }
+
+    .control-label span {
+      font-size: 13px;
+      color: var(--gray);
+    }
+
+    .switch {
+      position: relative;
+      width: 54px;
+      height: 30px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      background: #D1D5DB;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .slider::before {
+      content: "";
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      left: 3px;
+      top: 3px;
+      background: var(--white);
+      border-radius: 50%;
+      transition: 0.3s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .switch input:checked + .slider {
+      background: var(--orange);
+    }
+
+    .switch input:checked + .slider::before {
+      transform: translateX(24px);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--orange);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background: var(--dark-orange);
+    }
+
+    .btn-soft {
+      background: var(--bg-soft);
+      color: var(--orange);
+      border: 1px solid #FED7AA;
+    }
+
+    .btn-danger {
+      background: #FEE2E2;
+      color: var(--red);
+      border: 1px solid #FECACA;
+    }
+
+    .input-box,
+    .select-box {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 14px;
+      color: var(--black);
+      outline: none;
+      margin-top: 8px;
+      background: var(--white);
+    }
+
+    .input-box:focus,
+    .select-box:focus {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.12);
+    }
+
+    .status-box {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .mini-status {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      background: #FFFBF7;
+    }
+
+    .mini-status p {
+      font-size: 13px;
+      color: var(--gray);
+      margin-bottom: 8px;
+    }
+
+    .mini-status h3 {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--black);
+    }
+
+    @media (max-width: 700px) {
+      .hamburger {
+        display: flex;
+      }
+
+      .nav-links {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 14px;
+        right: 14px;
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: 0 12px 30px rgba(17, 24, 39, 0.10);
+        padding: 10px;
+        gap: 8px;
+        flex-direction: column;
+        align-items: stretch;
+        display: none;
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .control-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .wide-card {
+        grid-column: span 1;
+      }
+
+      .status-box {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .control-page {
+        padding: 18px 14px 28px;
+      }
+
+      .nav-container {
+        padding: 14px;
+      }
+
+      .title h1 {
+        font-size: 24px;
+      }
+
+      .badge {
+        width: 100%;
+        text-align: center;
+      }
+
+      .control-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .btn-group {
+        width: 100%;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo-wrap">
+        <img src="hatchai-logo.webp" alt="HatchAI Logo">
+        <div class="logo">Hatch<span>AI</span></div>
+      </div>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="control.html" class="active">Control</a></li>
+        <li><a href="prediction.html">Prediction</a></li>
+        <li><a href="log.html">Logs</a></li>
+        <li><a href="settings.html">Settings</a></li>
+      </ul>
+
+      <div class="nav-status">
+        <span class="dot"></span>
+        <span>Online</span>
+      </div>
+
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <main class="control-page">
+    <div class="topbar">
+      <div class="title">
+        <h1>Incubator Control</h1>
+        <p>Manage heating, motor rotation, alarms, and system behavior</p>
+      </div>
+      <div class="badge">Manual Control Panel</div>
+    </div>
+
+    <div class="control-grid">
+      <div class="card">
+        <div class="card-title">System Switches</div>
+        <div class="subtext">Enable or disable core incubator functions.</div>
+
+        <div class="control-row">
+          <div class="control-label">
+            <strong>Heating Relay</strong>
+            <span>Controls bulb or heater output</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="relayToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="control-row">
+          <div class="control-label">
+            <strong>Egg Turning Motor</strong>
+            <span>Automatic periodic turning</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="motorToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="control-row">
+          <div class="control-label">
+            <strong>Alert Buzzer</strong>
+            <span>Audio alert for anomalies</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="buzzerToggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Manual Actions</div>
+        <div class="subtext">Trigger quick actions when needed.</div>
+
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="showAction('Heater turned ON manually')">Turn Heater ON</button>
+          <button class="btn btn-soft" onclick="showAction('Motor rotation started')">Rotate Eggs Now</button>
+          <button class="btn btn-danger" onclick="showAction('Emergency stop activated')">Emergency Stop</button>
+        </div>
+
+        <div style="margin-top:18px;">
+          <div class="control-label">
+            <strong>Target Temperature</strong>
+            <span>Set the preferred incubator temperature</span>
+          </div>
+          <input type="number" class="input-box" id="targetTemp" value="37.8" step="0.1">
+        </div>
+
+        <div style="margin-top:16px;">
+          <div class="control-label">
+            <strong>Turning Interval</strong>
+            <span>Choose how often eggs rotate</span>
+          </div>
+          <select class="select-box" id="turnInterval">
+            <option>Every 1 hour</option>
+            <option selected>Every 2 hours</option>
+            <option>Every 4 hours</option>
+            <option>Every 6 hours</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card wide-card">
+        <div class="card-title">Current Control Status</div>
+        <div class="subtext">Live status summary of your control settings.</div>
+
+        <div class="status-box">
+          <div class="mini-status">
+            <p>Heating Relay</p>
+            <h3 id="relayState">ON</h3>
+          </div>
+          <div class="mini-status">
+            <p>Motor System</p>
+            <h3 id="motorState">ENABLED</h3>
+          </div>
+          <div class="mini-status">
+            <p>Buzzer</p>
+            <h3 id="buzzerState">OFF</h3>
+          </div>
+        </div>
+
+        <div id="actionStatus" style="margin-top:18px; font-size:14px; color: var(--gray);">
+          Waiting for command...
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const hamburger = document.getElementById("hamburger");
+    const navLinks = document.getElementById("navLinks");
+
+    hamburger.addEventListener("click", () => {
+      hamburger.classList.toggle("active");
+      navLinks.classList.toggle("active");
+    });
+
+    document.querySelectorAll("#navLinks a").forEach(link => {
+      link.addEventListener("click", () => {
+        hamburger.classList.remove("active");
+        navLinks.classList.remove("active");
+      });
+    });
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 700) {
+        hamburger.classList.remove("active");
+        navLinks.classList.remove("active");
+      }
+    });
+
+    const relayToggle = document.getElementById("relayToggle");
+    const motorToggle = document.getElementById("motorToggle");
+    const buzzerToggle = document.getElementById("buzzerToggle");
+
+    const relayState = document.getElementById("relayState");
+    const motorState = document.getElementById("motorState");
+    const buzzerState = document.getElementById("buzzerState");
+
+    relayToggle.addEventListener("change", () => {
+      relayState.textContent = relayToggle.checked ? "ON" : "OFF";
+    });
+
+    motorToggle.addEventListener("change", () => {
+      motorState.textContent = motorToggle.checked ? "ENABLED" : "DISABLED";
+    });
+
+    buzzerToggle.addEventListener("change", () => {
+      buzzerState.textContent = buzzerToggle.checked ? "ON" : "OFF";
+    });
+
+    function showAction(message) {
+      document.getElementById("actionStatus").textContent = message;
+    }
+  </script>
+</body>
+</html>
