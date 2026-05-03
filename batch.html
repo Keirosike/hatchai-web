@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HatchAI Batch</title>
+  <link rel="icon" href="fortitle.webp" type="image/webp" />
+  <style>
+    :root{
+      --orange: #D97706;
+      --dark-orange: #B45309;
+      --black: #111827;
+      --gray: #4B5563;
+      --border: #E5E7EB;
+      --white: #FFFFFF;
+      --bg-soft: #FFF7ED;
+      --green: #16A34A;
+      --red: #DC2626;
+      --yellow: #F59E0B;
+    }
+
+    @font-face {
+      font-family: 'Inter';
+      src: url('/font/inter-regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Inter';
+      src: url('/font/inter-semibold.woff2') format('woff2');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+
+    body {
+      background: var(--white);
+      color: var(--black);
+    }
+
+    .navbar {
+      width: 100%;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .nav-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-wrap img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--black);
+    }
+
+    .logo span {
+      color: var(--orange);
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .nav-links li a {
+      text-decoration: none;
+      font-size: 14px;
+      color: var(--gray);
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 10px;
+      transition: 0.2s ease;
+    }
+
+    .nav-links li a:hover {
+      background: var(--bg-soft);
+      color: var(--orange);
+    }
+
+    .nav-links li a.active {
+      background: var(--orange);
+      color: var(--white);
+    }
+
+    .nav-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--gray);
+      font-weight: 600;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .hamburger {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      border-radius: 10px;
+      cursor: pointer;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .hamburger span {
+      width: 20px;
+      height: 2px;
+      background: var(--black);
+      transition: 0.3s;
+      font-size: 0;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    .batch-page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 20px 32px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .title h1 {
+      font-size: 30px;
+      font-weight: 600;
+      color: var(--black);
+      margin-bottom: 6px;
+    }
+
+    .title p {
+      font-size: 14px;
+      color: var(--gray);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .add-batch-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: none;
+      border-radius: 999px;
+      background: var(--orange);
+      color: var(--white);
+      padding: 11px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 8px 22px rgba(217, 119, 6, 0.22);
+      transition: 0.2s ease;
+    }
+
+    .add-batch-btn:hover {
+      background: var(--dark-orange);
+      transform: translateY(-1px);
+    }
+
+    .plus-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 15px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--orange);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background: var(--dark-orange);
+    }
+
+    .btn-soft {
+      background: var(--bg-soft);
+      color: var(--orange);
+      border: 1px solid #FED7AA;
+    }
+
+    .btn-soft:hover {
+      background: #FFEDD5;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 4px 16px rgba(17, 24, 39, 0.05);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      color: var(--gray);
+      font-weight: 600;
+    }
+
+    .icon-box {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: var(--bg-soft);
+      color: var(--orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .value {
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--black);
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+
+    .subtext {
+      font-size: 14px;
+      color: var(--gray);
+      line-height: 1.5;
+    }
+
+    .wide-card {
+      grid-column: span 4;
+      background: linear-gradient(135deg, var(--orange), var(--dark-orange));
+      color: var(--white);
+      border: none;
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .wide-card .card-title,
+    .wide-card .subtext {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .batch-name {
+      font-size: 42px;
+      font-weight: 600;
+      margin: 10px 0 8px;
+      line-height: 1.1;
+    }
+
+    .progress-wrap {
+      background: rgba(255, 255, 255, 0.22);
+      border-radius: 999px;
+      height: 14px;
+      overflow: hidden;
+      margin-top: 14px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 62%;
+      background: var(--white);
+      border-radius: 999px;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .section-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 24, 39, 0.48);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 50;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      width: min(760px, 100%);
+      max-height: 92vh;
+      overflow-y: auto;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: 0 22px 60px rgba(17, 24, 39, 0.25);
+      padding: 20px;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .modal-title h2 {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--black);
+      margin-bottom: 5px;
+    }
+
+    .modal-title p {
+      font-size: 14px;
+      color: var(--gray);
+      line-height: 1.5;
+    }
+
+    .close-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      color: var(--black);
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .close-btn:hover {
+      background: var(--bg-soft);
+      color: var(--orange);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .field label {
+      font-size: 13px;
+      color: var(--gray);
+      font-weight: 600;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 11px 12px;
+      font-size: 14px;
+      color: var(--black);
+      background: var(--white);
+      outline: none;
+      transition: 0.2s ease;
+    }
+
+    .field textarea {
+      min-height: 94px;
+      resize: vertical;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.12);
+    }
+
+    .full {
+      grid-column: span 2;
+    }
+
+    .form-actions {
+      grid-column: span 2;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 2px;
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .status-ok {
+      background: #DCFCE7;
+      color: var(--green);
+    }
+
+    .status-warning {
+      background: #FEF3C7;
+      color: #A16207;
+    }
+
+    .status-alert {
+      background: #FEE2E2;
+      color: var(--red);
+    }
+
+    .mini-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .mini-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--gray);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    .mini-list li:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .mini-list strong {
+      color: var(--black);
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .table-card {
+      margin-top: 18px;
+      overflow: hidden;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 13px 10px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    th {
+      color: var(--gray);
+      font-weight: 600;
+      background: #FAFAFA;
+    }
+
+    td {
+      color: var(--black);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .egg-type {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-weight: 600;
+    }
+
+    .egg-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--orange);
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .wide-card {
+        grid-column: span 2;
+        grid-template-columns: 1fr;
+      }
+
+      .section-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .hamburger {
+        display: flex;
+      }
+
+      .nav-links {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 14px;
+        right: 14px;
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: 0 12px 30px rgba(17, 24, 39, 0.10);
+        padding: 10px;
+        gap: 8px;
+        flex-direction: column;
+        align-items: stretch;
+        display: none;
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .nav-links li a {
+        display: block;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .batch-page {
+        padding: 18px 14px 28px;
+      }
+
+      .nav-container {
+        padding: 14px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .wide-card {
+        grid-column: span 1;
+      }
+
+      .title h1 {
+        font-size: 24px;
+      }
+
+      .value {
+        font-size: 28px;
+      }
+
+      .batch-name {
+        font-size: 32px;
+      }
+
+      .actions {
+        width: 100%;
+      }
+
+      .btn {
+        flex: 1;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .full {
+        grid-column: span 1;
+      }
+
+      .form-actions {
+        grid-column: span 1;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo-wrap">
+        <img src="hatchai-logo.webp" alt="HatchAI Logo">
+        <div class="logo">Hatch<span>AI</span></div>
+      </div>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="control.html">Control</a></li>
+        <li><a href="batch.html" class="active">Batch</a></li>
+        <li><a href="log.html">Logs</a></li>
+        <li><a href="settings.html">Settings</a></li>
+      </ul>
+
+      <div class="nav-status">
+        <span class="dot"></span>
+        <span id="wifiStatus">Online</span>
+      </div>
+
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
+        <span>-</span>
+        <span>-</span>
+        <span>-</span>
+      </button>
+    </div>
+  </nav>
+
+  <main class="batch-page">
+    <div class="topbar">
+      <div class="title">
+        <h1>Batch Management</h1>
+        <p>Create and monitor the active egg batch in your incubator</p>
+      </div>
+      <div class="actions">
+        <button class="add-batch-btn" type="button" id="openBatchModal">
+          <span class="plus-icon">+</span>
+          Add Batch
+        </button>
+      </div>
+    </div>
+
+    <section class="grid">
+      <div class="card wide-card">
+        <div>
+          <div class="card-title">Current Batch</div>
+          <div class="batch-name" id="currentBatchName">Batch A-0426</div>
+          <div class="subtext" id="currentBatchMeta">Chicken eggs • Day 13 of 21 • Started April 20, 2026</div>
+        </div>
+        <div>
+          <div class="card-title">Incubation Progress</div>
+          <div class="progress-wrap" aria-label="Batch progress">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+          <div class="progress-meta">
+            <span id="progressPercent">62% complete</span>
+            <span id="daysRemaining">8 days left</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-grid">
+      <div class="card">
+        <div class="card-title">Batch Summary</div>
+        <ul class="mini-list">
+          <li><span>Selected batch</span> <strong id="summaryBatch">Batch A-0426</strong></li>
+          <li><span>Egg type</span> <strong id="summaryType">Chicken</strong></li>
+          <li><span>Egg count</span> <strong id="summaryCount">36 eggs</strong></li>
+          <li><span>Started</span> <strong id="summaryStarted">Apr 20, 2026</strong></li>
+          <li><span>Expected hatch</span> <strong id="summaryHatch">May 11, 2026</strong></li>
+          <li><span>Status</span> <strong><span class="status-pill status-ok">Normal</span></strong></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card table-card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Incubator Batch Records</div>
+          <p class="subtext">Current and previous batch records for your incubator</p>
+        </div>
+        <span class="status-pill status-ok">1 Active</span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Batch</th>
+              <th>Egg Type</th>
+              <th>Eggs</th>
+              <th>Start Date</th>
+              <th>Expected Hatch</th>
+              <th>Progress</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Batch A-0426</strong></td>
+              <td><span class="egg-type"><span class="egg-dot"></span>Chicken</span></td>
+              <td>36</td>
+              <td>Apr 20, 2026</td>
+              <td>May 11, 2026</td>
+              <td>62%</td>
+              <td><span class="status-pill status-ok">Normal</span></td>
+            </tr>
+            <tr>
+              <td><strong>Batch C-0326</strong></td>
+              <td><span class="egg-type"><span class="egg-dot"></span>Chicken</span></td>
+              <td>30</td>
+              <td>Mar 25, 2026</td>
+              <td>Apr 15, 2026</td>
+              <td>100%</td>
+              <td><span class="status-pill status-ok">Completed</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-overlay" id="batchModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="batchModalTitle">
+      <div class="modal-header">
+        <div class="modal-title">
+          <h2 id="batchModalTitle">Add Batch</h2>
+          <p>Enter the details for the batch currently running in your incubator.</p>
+        </div>
+        <button class="close-btn" type="button" id="closeBatchModal" aria-label="Close batch form">&times;</button>
+      </div>
+
+      <div class="card-header">
+        <div class="card-title">Batch Form</div>
+        <span class="status-pill status-ok" id="formStatus">Ready</span>
+      </div>
+
+      <form class="form-grid" id="batchForm">
+        <div class="field">
+          <label for="batchName">Batch Name</label>
+          <input type="text" id="batchName" value="Batch A-0426" placeholder="Example: Batch A-0426">
+        </div>
+
+        <div class="field">
+          <label for="eggType">Egg Type</label>
+          <select id="eggType">
+            <option>Chicken</option>
+            <option>Duck</option>
+            <option>Quail</option>
+            <option>Goose</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="eggCount">Number of Eggs</label>
+          <input type="number" id="eggCount" value="36" min="1" placeholder="36">
+        </div>
+
+        <div class="field">
+          <label for="startDate">Start Date</label>
+          <input type="date" id="startDate" value="2026-04-20">
+        </div>
+
+        <div class="field">
+          <label for="targetTemp">Target Temperature</label>
+          <input type="text" id="targetTemp" value="37.8°C" placeholder="37.8°C">
+        </div>
+
+        <div class="field">
+          <label for="targetHumidity">Target Humidity</label>
+          <input type="text" id="targetHumidity" value="58%" placeholder="58%">
+        </div>
+
+        <div class="field full">
+          <label for="batchNotes">Notes</label>
+          <textarea id="batchNotes" placeholder="Add batch notes here">Check candling status on Day 14. Maintain stable humidity and automatic egg turning.</textarea>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-soft" type="button" id="resetFormBtn">Reset Form</button>
+          <button class="btn btn-primary" type="button" id="saveBatchBtn">Save Batch</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const hamburger = document.getElementById("hamburger");
+    const navLinks = document.getElementById("navLinks");
+
+    hamburger.addEventListener("click", () => {
+      hamburger.classList.toggle("active");
+      navLinks.classList.toggle("active");
+      const isOpen = navLinks.classList.contains("active");
+      hamburger.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+
+    document.querySelectorAll("#navLinks a").forEach(link => {
+      link.addEventListener("click", () => {
+        hamburger.classList.remove("active");
+        navLinks.classList.remove("active");
+        hamburger.setAttribute("aria-expanded", "false");
+      });
+    });
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 700) {
+        hamburger.classList.remove("active");
+        navLinks.classList.remove("active");
+        hamburger.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    const batchModal = document.getElementById("batchModal");
+    const openBatchModal = document.getElementById("openBatchModal");
+    const closeBatchModal = document.getElementById("closeBatchModal");
+
+    function openModal() {
+      batchModal.classList.add("active");
+      batchModal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeModal() {
+      batchModal.classList.remove("active");
+      batchModal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+    }
+
+    openBatchModal.addEventListener("click", openModal);
+    closeBatchModal.addEventListener("click", closeModal);
+
+    batchModal.addEventListener("click", event => {
+      if (event.target === batchModal) {
+        closeModal();
+      }
+    });
+
+    window.addEventListener("keydown", event => {
+      if (event.key === "Escape" && batchModal.classList.contains("active")) {
+        closeModal();
+      }
+    });
+
+    const incubationDays = {
+      Chicken: 21,
+      Duck: 28,
+      Quail: 17,
+      Goose: 30
+    };
+
+    const batchName = document.getElementById("batchName");
+    const eggType = document.getElementById("eggType");
+    const eggCount = document.getElementById("eggCount");
+    const startDate = document.getElementById("startDate");
+    const saveBatchBtn = document.getElementById("saveBatchBtn");
+    const resetFormBtn = document.getElementById("resetFormBtn");
+    const formStatus = document.getElementById("formStatus");
+
+    function formatDate(date) {
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric"
+      });
+    }
+
+    function updateSummary() {
+      const selectedType = eggType.value;
+      const totalDays = incubationDays[selectedType] || 21;
+      const started = new Date(startDate.value + "T00:00:00");
+      const hatch = new Date(started);
+      hatch.setDate(started.getDate() + totalDays);
+
+      document.getElementById("summaryBatch").textContent = batchName.value || "Unnamed Batch";
+      document.getElementById("summaryType").textContent = selectedType;
+      document.getElementById("summaryCount").textContent = `${eggCount.value || 0} eggs`;
+      document.getElementById("summaryStarted").textContent = Number.isNaN(started.getTime()) ? "Not set" : formatDate(started);
+      document.getElementById("summaryHatch").textContent = Number.isNaN(hatch.getTime()) ? "Not set" : formatDate(hatch);
+    }
+
+    [batchName, eggType, eggCount, startDate].forEach(input => {
+      input.addEventListener("input", updateSummary);
+      input.addEventListener("change", updateSummary);
+    });
+
+    saveBatchBtn.addEventListener("click", () => {
+      updateSummary();
+      formStatus.textContent = "Saved";
+      formStatus.className = "status-pill status-ok";
+
+      setTimeout(() => {
+        formStatus.textContent = "Ready";
+        closeModal();
+      }, 700);
+    });
+
+    resetFormBtn.addEventListener("click", () => {
+      document.getElementById("batchForm").reset();
+      updateSummary();
+      formStatus.textContent = "Reset";
+      formStatus.className = "status-pill status-warning";
+
+      setTimeout(() => {
+        formStatus.textContent = "Ready";
+        formStatus.className = "status-pill status-ok";
+      }, 1800);
+    });
+
+    updateSummary();
+  </script>
+</body>
+</html>

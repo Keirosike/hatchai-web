@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hatchai Dashboard</title>
+  <title>HatchAI Dashboard</title>
    <link rel="icon" href="fortitle.webp" type="image/webp" />
   <style>
     :root{
@@ -63,6 +63,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 20px;
+      position: relative;
     }
 
     .logo {
@@ -90,6 +91,7 @@
       padding: 8px 12px;
       border-radius: 10px;
       transition: 0.2s ease;
+      display:block;
     }
 
     .nav-links li a:hover {
@@ -109,6 +111,7 @@
       font-size: 13px;
       color: var(--gray);
       font-weight: 600;
+      white-space: nowrap;
     }
 
     .dot {
@@ -356,12 +359,14 @@
   justify-content: center;
   align-items: center;
   gap: 5px;
+  padding: 0;
 }
 
 .hamburger span {
   width: 20px;
   height: 2px;
   background: var(--black);
+  border-radius: 999px;
   transition: 0.3s;
 }
 
@@ -475,8 +480,7 @@
 
       <ul class="nav-links" id="navLinks">
         <li><a href="dashboard.html" class="active">Dashboard</a></li>
-        <li><a href="control.html">Control</a></li>
-        <li><a href="prediction.html">Prediction</a></li>
+        <li><a href="batch.html">Batch</a></li>
         <li><a href="log.html">Logs</a></li>
         <li><a href="settings.html">Settings</a></li>
       </ul>
@@ -485,11 +489,11 @@
         <span class="dot"></span>
         <span id="wifiStatus">Online</span>
       </div>
-
+      
       <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
-        <span>-</span>
-        <span>-</span>
-        <span>-</span>
+        <span></span>
+        <span></span>
+        <span></span>
       </button>
     </div>
   </nav>

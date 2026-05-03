@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HatchAI Control</title>
-   <link rel="icon" href="fortitle.webp" type="image/webp" />
+  <link rel="icon" href="fortitle.webp" type="image/webp" />
   <style>
     :root{
       --orange: #D97706;
@@ -16,6 +16,7 @@
       --bg-soft: #FFF7ED;
       --green: #16A34A;
       --red: #DC2626;
+      --yellow: #F59E0B;
     }
 
     @font-face {
@@ -52,7 +53,7 @@
       border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
-      z-index: 1000;
+      z-index: 10;
     }
 
     .nav-container {
@@ -70,21 +71,18 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      min-width: 0;
     }
 
     .logo-wrap img {
       width: 32px;
       height: 32px;
       object-fit: contain;
-      flex-shrink: 0;
     }
 
     .logo {
       font-size: 20px;
       font-weight: 600;
       color: var(--black);
-      white-space: nowrap;
     }
 
     .logo span {
@@ -209,10 +207,28 @@
       font-weight: 600;
     }
 
-    .control-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 18px;
+    .status-pill {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .status-ok {
+      background: #DCFCE7;
+      color: var(--green);
+    }
+
+    .status-off,
+    .status-alert {
+      background: #FEE2E2;
+      color: var(--red);
+    }
+
+    .status-warning {
+      background: #FEF3C7;
+      color: #A16207;
     }
 
     .card {
@@ -223,59 +239,109 @@
       box-shadow: 0 4px 16px rgba(17, 24, 39, 0.05);
     }
 
-    .wide-card {
-      grid-column: span 2;
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
     }
 
     .card-title {
-      font-size: 18px;
+      font-size: 15px;
+      color: var(--gray);
       font-weight: 600;
-      color: var(--black);
-      margin-bottom: 8px;
     }
 
     .subtext {
       font-size: 14px;
       color: var(--gray);
       line-height: 1.5;
+    }
+
+    .icon-box {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: var(--bg-soft);
+      color: var(--orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .control-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+    }
+
+    .auto-card {
+      background: linear-gradient(135deg, var(--orange), var(--dark-orange));
+      color: var(--white);
+      border: none;
       margin-bottom: 18px;
     }
 
-    .control-row {
+    .auto-card .card-title,
+    .auto-card .subtext {
+      color: rgba(255,255,255,0.9);
+    }
+
+    .auto-row {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       gap: 16px;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--border);
+      margin-top: 18px;
     }
 
-    .control-row:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-
-    .control-label {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .control-label strong {
-      font-size: 15px;
-      color: var(--black);
+    .auto-state {
+      font-size: 38px;
+      line-height: 1.1;
       font-weight: 600;
     }
 
-    .control-label span {
-      font-size: 13px;
-      color: var(--gray);
+    .control-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .control-item {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      background: #FAFAFA;
+      transition: 0.2s ease;
+    }
+
+    .control-item.locked {
+      opacity: 0.58;
+      background: #F3F4F6;
+    }
+
+    .control-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .control-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--black);
     }
 
     .switch {
       position: relative;
-      width: 54px;
-      height: 30px;
+      width: 50px;
+      height: 28px;
       flex-shrink: 0;
     }
 
@@ -287,24 +353,24 @@
 
     .slider {
       position: absolute;
+      cursor: pointer;
       inset: 0;
       background: #D1D5DB;
       border-radius: 999px;
-      cursor: pointer;
-      transition: 0.3s ease;
+      transition: 0.2s ease;
     }
 
     .slider::before {
       content: "";
       position: absolute;
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
       left: 3px;
       top: 3px;
       background: var(--white);
       border-radius: 50%;
-      transition: 0.3s ease;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      transition: 0.2s ease;
+      box-shadow: 0 2px 6px rgba(17, 24, 39, 0.18);
     }
 
     .switch input:checked + .slider {
@@ -312,20 +378,23 @@
     }
 
     .switch input:checked + .slider::before {
-      transform: translateX(24px);
+      transform: translateX(22px);
     }
 
-    .btn-group {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
+    .switch input:disabled + .slider {
+      cursor: not-allowed;
+      background: #D1D5DB;
+    }
+
+    .switch input:disabled:checked + .slider {
+      background: #F3C28A;
     }
 
     .btn {
       border: none;
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-size: 14px;
+      border-radius: 999px;
+      padding: 11px 15px;
+      font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s ease;
@@ -346,55 +415,94 @@
       border: 1px solid #FED7AA;
     }
 
-    .btn-danger {
-      background: #FEE2E2;
-      color: var(--red);
-      border: 1px solid #FECACA;
+    .btn-soft:hover {
+      background: #FFEDD5;
     }
 
-    .input-box,
-    .select-box {
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .field label {
+      font-size: 13px;
+      color: var(--gray);
+      font-weight: 600;
+    }
+
+    .field input {
       width: 100%;
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 12px 14px;
+      padding: 11px 12px;
       font-size: 14px;
       color: var(--black);
-      outline: none;
-      margin-top: 8px;
       background: var(--white);
+      outline: none;
+      transition: 0.2s ease;
     }
 
-    .input-box:focus,
-    .select-box:focus {
+    .field input:focus {
       border-color: var(--orange);
       box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.12);
     }
 
-    .status-box {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      margin-top: 10px;
+    .summary-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 14px;
     }
 
-    .mini-status {
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-      background: #FFFBF7;
-    }
-
-    .mini-status p {
-      font-size: 13px;
+    .summary-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
       color: var(--gray);
-      margin-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
     }
 
-    .mini-status h3 {
-      font-size: 20px;
-      font-weight: 600;
+    .summary-list li:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .summary-list strong {
       color: var(--black);
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .actions-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    @media (max-width: 900px) {
+      .control-layout,
+      .control-grid,
+      .settings-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 700px) {
@@ -423,20 +531,6 @@
       }
     }
 
-    @media (max-width: 900px) {
-      .control-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .wide-card {
-        grid-column: span 1;
-      }
-
-      .status-box {
-        grid-template-columns: 1fr;
-      }
-    }
-
     @media (max-width: 640px) {
       .control-page {
         padding: 18px 14px 28px;
@@ -455,17 +549,17 @@
         text-align: center;
       }
 
-      .control-row {
-        flex-direction: column;
+      .auto-row {
         align-items: flex-start;
+        flex-direction: column;
       }
 
-      .btn-group {
-        width: 100%;
+      .auto-state {
+        font-size: 32px;
       }
 
-      .btn {
-        width: 100%;
+      .actions-row {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -481,17 +575,17 @@
       <ul class="nav-links" id="navLinks">
         <li><a href="dashboard.html">Dashboard</a></li>
         <li><a href="control.html" class="active">Control</a></li>
-        <li><a href="prediction.html">Prediction</a></li>
+        <li><a href="batch.html">Batch</a></li>
         <li><a href="log.html">Logs</a></li>
         <li><a href="settings.html">Settings</a></li>
       </ul>
 
       <div class="nav-status">
         <span class="dot"></span>
-        <span>Online</span>
+        <span id="wifiStatus">Online</span>
       </div>
-
-      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
         <span></span>
         <span></span>
         <span></span>
@@ -503,106 +597,122 @@
     <div class="topbar">
       <div class="title">
         <h1>Incubator Control</h1>
-        <p>Manage heating, motor rotation, alarms, and system behavior</p>
+        <p>Manage automatic mode and manual device controls</p>
       </div>
-      <div class="badge">Manual Control Panel</div>
+      <div class="badge" id="controlStatusBadge">Auto Mode: ON</div>
     </div>
 
-    <div class="control-grid">
-      <div class="card">
-        <div class="card-title">System Switches</div>
-        <div class="subtext">Enable or disable core incubator functions.</div>
+    <section class="auto-card card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Automatic Control Mode</div>
+          <p class="subtext">When Auto Mode is ON, HatchAI controls the bulb, fan, and egg turner automatically.</p>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="autoModeSwitch" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
 
-        <div class="control-row">
-          <div class="control-label">
-            <strong>Heating Relay</strong>
-            <span>Controls bulb or heater output</span>
+      <div class="auto-row">
+        <div>
+          <div class="auto-state" id="autoStateText">Auto ON</div>
+          <p class="subtext" id="autoDescription">Manual controls are locked while automatic mode is active.</p>
+        </div>
+        <span class="status-pill status-ok" id="lockBadge">Manual Controls Locked</span>
+      </div>
+    </section>
+
+    <section class="control-layout">
+      <div>
+        <div class="control-grid">
+          <div class="control-item locked" id="bulbCard">
+            <div class="control-top">
+              <div class="control-name">Heating Bulb</div>
+              <label class="switch">
+                <input type="checkbox" id="bulbSwitch" checked disabled>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <p class="subtext" id="bulbText">Auto-controlled by temperature target</p>
           </div>
-          <label class="switch">
-            <input type="checkbox" id="relayToggle" checked>
-            <span class="slider"></span>
-          </label>
+
+          <div class="control-item locked" id="fanCard">
+            <div class="control-top">
+              <div class="control-name">Fan</div>
+              <label class="switch">
+                <input type="checkbox" id="fanSwitch" checked disabled>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <p class="subtext" id="fanText">Auto-controlled for air circulation</p>
+          </div>
+
+          <div class="control-item locked" id="turnerCard">
+            <div class="control-top">
+              <div class="control-name">Egg Turner</div>
+              <label class="switch">
+                <input type="checkbox" id="turnerSwitch" checked disabled>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <p class="subtext" id="turnerText">Auto-controlled by turning interval</p>
+          </div>
         </div>
 
-        <div class="control-row">
-          <div class="control-label">
-            <strong>Egg Turning Motor</strong>
-            <span>Automatic periodic turning</span>
+        <div class="card" style="margin-top: 18px;">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Control Settings</div>
+              <p class="subtext">Targets used when automatic mode is enabled</p>
+            </div>
+            <div class="icon-box">C</div>
           </div>
-          <label class="switch">
-            <input type="checkbox" id="motorToggle" checked>
-            <span class="slider"></span>
-          </label>
-        </div>
 
-        <div class="control-row">
-          <div class="control-label">
-            <strong>Alert Buzzer</strong>
-            <span>Audio alert for anomalies</span>
+          <div class="settings-grid">
+            <div class="field">
+              <label for="targetTemp">Target Temperature</label>
+              <input type="text" id="targetTemp" value="37.8°C">
+            </div>
+
+            <div class="field">
+              <label for="targetHumidity">Target Humidity</label>
+              <input type="text" id="targetHumidity" value="58%">
+            </div>
+
+            <div class="field">
+              <label for="turnInterval">Turn Interval</label>
+              <input type="text" id="turnInterval" value="2 hrs">
+            </div>
           </div>
-          <label class="switch">
-            <input type="checkbox" id="buzzerToggle">
-            <span class="slider"></span>
-          </label>
+
+          <div class="actions-row">
+            <button class="btn btn-primary" type="button" id="saveSettingsBtn">Save Settings</button>
+            <button class="btn btn-soft" type="button" id="turnEggBtn" disabled>Turn Eggs Now</button>
+          </div>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-title">Manual Actions</div>
-        <div class="subtext">Trigger quick actions when needed.</div>
-
-        <div class="btn-group">
-          <button class="btn btn-primary" onclick="showAction('Heater turned ON manually')">Turn Heater ON</button>
-          <button class="btn btn-soft" onclick="showAction('Motor rotation started')">Rotate Eggs Now</button>
-          <button class="btn btn-danger" onclick="showAction('Emergency stop activated')">Emergency Stop</button>
+      <aside class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Control Summary</div>
+            <p class="subtext">Current device state for one incubator</p>
+          </div>
+          <div class="icon-box">S</div>
         </div>
 
-        <div style="margin-top:18px;">
-          <div class="control-label">
-            <strong>Target Temperature</strong>
-            <span>Set the preferred incubator temperature</span>
-          </div>
-          <input type="number" class="input-box" id="targetTemp" value="37.8" step="0.1">
-        </div>
-
-        <div style="margin-top:16px;">
-          <div class="control-label">
-            <strong>Turning Interval</strong>
-            <span>Choose how often eggs rotate</span>
-          </div>
-          <select class="select-box" id="turnInterval">
-            <option>Every 1 hour</option>
-            <option selected>Every 2 hours</option>
-            <option>Every 4 hours</option>
-            <option>Every 6 hours</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="card wide-card">
-        <div class="card-title">Current Control Status</div>
-        <div class="subtext">Live status summary of your control settings.</div>
-
-        <div class="status-box">
-          <div class="mini-status">
-            <p>Heating Relay</p>
-            <h3 id="relayState">ON</h3>
-          </div>
-          <div class="mini-status">
-            <p>Motor System</p>
-            <h3 id="motorState">ENABLED</h3>
-          </div>
-          <div class="mini-status">
-            <p>Buzzer</p>
-            <h3 id="buzzerState">OFF</h3>
-          </div>
-        </div>
-
-        <div id="actionStatus" style="margin-top:18px; font-size:14px; color: var(--gray);">
-          Waiting for command...
-        </div>
-      </div>
-    </div>
+        <ul class="summary-list">
+          <li><span>Auto mode</span> <strong id="summaryAuto">ON</strong></li>
+          <li><span>Heating bulb</span> <strong id="summaryBulb">Auto</strong></li>
+          <li><span>Fan</span> <strong id="summaryFan">Auto</strong></li>
+          <li><span>Egg turner</span> <strong id="summaryTurner">Auto</strong></li>
+          <li><span>Manual controls</span> <strong id="summaryLock">Locked</strong></li>
+          <li><span>Last manual turn</span> <strong id="lastTurnValue">None</strong></li>
+          <li><span>Settings status</span> <strong id="settingsStatus">Saved</strong></li>
+        </ul>
+      </aside>
+    </section>
   </main>
 
   <script>
@@ -612,12 +722,15 @@
     hamburger.addEventListener("click", () => {
       hamburger.classList.toggle("active");
       navLinks.classList.toggle("active");
+      const isOpen = navLinks.classList.contains("active");
+      hamburger.setAttribute("aria-expanded", isOpen ? "true" : "false");
     });
 
     document.querySelectorAll("#navLinks a").forEach(link => {
       link.addEventListener("click", () => {
         hamburger.classList.remove("active");
         navLinks.classList.remove("active");
+        hamburger.setAttribute("aria-expanded", "false");
       });
     });
 
@@ -625,32 +738,82 @@
       if (window.innerWidth > 700) {
         hamburger.classList.remove("active");
         navLinks.classList.remove("active");
+        hamburger.setAttribute("aria-expanded", "false");
       }
     });
 
-    const relayToggle = document.getElementById("relayToggle");
-    const motorToggle = document.getElementById("motorToggle");
-    const buzzerToggle = document.getElementById("buzzerToggle");
+    const autoModeSwitch = document.getElementById("autoModeSwitch");
+    const bulbSwitch = document.getElementById("bulbSwitch");
+    const fanSwitch = document.getElementById("fanSwitch");
+    const turnerSwitch = document.getElementById("turnerSwitch");
+    const turnEggBtn = document.getElementById("turnEggBtn");
+    const saveSettingsBtn = document.getElementById("saveSettingsBtn");
 
-    const relayState = document.getElementById("relayState");
-    const motorState = document.getElementById("motorState");
-    const buzzerState = document.getElementById("buzzerState");
+    const deviceCards = [
+      document.getElementById("bulbCard"),
+      document.getElementById("fanCard"),
+      document.getElementById("turnerCard")
+    ];
 
-    relayToggle.addEventListener("change", () => {
-      relayState.textContent = relayToggle.checked ? "ON" : "OFF";
-    });
+    function updateControlState() {
+      const autoOn = autoModeSwitch.checked;
 
-    motorToggle.addEventListener("change", () => {
-      motorState.textContent = motorToggle.checked ? "ENABLED" : "DISABLED";
-    });
+      bulbSwitch.disabled = autoOn;
+      fanSwitch.disabled = autoOn;
+      turnerSwitch.disabled = autoOn;
+      turnEggBtn.disabled = autoOn;
 
-    buzzerToggle.addEventListener("change", () => {
-      buzzerState.textContent = buzzerToggle.checked ? "ON" : "OFF";
-    });
+      deviceCards.forEach(card => {
+        card.classList.toggle("locked", autoOn);
+      });
 
-    function showAction(message) {
-      document.getElementById("actionStatus").textContent = message;
+      document.getElementById("controlStatusBadge").textContent = autoOn ? "Auto Mode: ON" : "Auto Mode: OFF";
+      document.getElementById("autoStateText").textContent = autoOn ? "Auto ON" : "Auto OFF";
+      document.getElementById("autoDescription").textContent = autoOn
+        ? "Manual controls are locked while automatic mode is active."
+        : "Manual controls are now available for the bulb, fan, and egg turner.";
+
+      document.getElementById("lockBadge").textContent = autoOn ? "Manual Controls Locked" : "Manual Controls Unlocked";
+      document.getElementById("lockBadge").className = autoOn ? "status-pill status-ok" : "status-pill status-warning";
+
+      document.getElementById("summaryAuto").textContent = autoOn ? "ON" : "OFF";
+      document.getElementById("summaryBulb").textContent = autoOn ? "Auto" : (bulbSwitch.checked ? "ON" : "OFF");
+      document.getElementById("summaryFan").textContent = autoOn ? "Auto" : (fanSwitch.checked ? "ON" : "OFF");
+      document.getElementById("summaryTurner").textContent = autoOn ? "Auto" : (turnerSwitch.checked ? "ON" : "OFF");
+      document.getElementById("summaryLock").textContent = autoOn ? "Locked" : "Unlocked";
+
+      document.getElementById("bulbText").textContent = autoOn
+        ? "Auto-controlled by temperature target"
+        : (bulbSwitch.checked ? "Heating bulb is ON" : "Heating bulb is OFF");
+
+      document.getElementById("fanText").textContent = autoOn
+        ? "Auto-controlled for air circulation"
+        : (fanSwitch.checked ? "Fan is ON" : "Fan is OFF");
+
+      document.getElementById("turnerText").textContent = autoOn
+        ? "Auto-controlled by turning interval"
+        : (turnerSwitch.checked ? "Egg turner is ON" : "Egg turner is OFF");
     }
+
+    autoModeSwitch.addEventListener("change", updateControlState);
+    bulbSwitch.addEventListener("change", updateControlState);
+    fanSwitch.addEventListener("change", updateControlState);
+    turnerSwitch.addEventListener("change", updateControlState);
+
+    turnEggBtn.addEventListener("click", () => {
+      document.getElementById("lastTurnValue").textContent = "Just now";
+      document.getElementById("turnerText").textContent = "Manual egg turn completed";
+    });
+
+    saveSettingsBtn.addEventListener("click", () => {
+      document.getElementById("settingsStatus").textContent = "Saved just now";
+
+      setTimeout(() => {
+        document.getElementById("settingsStatus").textContent = "Saved";
+      }, 1800);
+    });
+
+    updateControlState();
   </script>
 </body>
 </html>
