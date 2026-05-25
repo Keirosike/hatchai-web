@@ -19,3 +19,9 @@ function loadData(key, fallback = null) {
 function removeData(key) {
   localStorage.removeItem(key);
 }
+
+window.HatchStorage = {
+  set: saveData,
+  get: loadData,
+  remove: removeData
+};

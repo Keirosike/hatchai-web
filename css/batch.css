@@ -307,7 +307,6 @@
   cursor: default;
 }
 
-
 @media (max-width: 900px) {
   .batch-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -344,4 +343,5 @@
   .form-actions {
     flex-direction: column;
   }
+
 }

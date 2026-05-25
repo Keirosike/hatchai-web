@@ -344,6 +344,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function saveBatch(batch) {
+    const isUpdate = batches.some(item => item.id === batch.id);
+
     if (batch.selected) {
       batches = batches.map(item => ({ ...item, selected: false }));
     }
@@ -358,6 +360,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     saveBatches();
     renderApp();
+
+    return isUpdate;
   }
 
   function selectBatch(id) {
@@ -414,20 +418,24 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const confirmed = confirm(`Delete ${batch.name}?`);
+    window.HatchModal.open({
+      title: "Delete batch?",
+      message: `Delete "${batch.name}" from your incubator batch records? This action cannot be undone.`,
+      confirmText: "Delete Batch",
+      cancelText: "Cancel",
+      confirmClass: "modal-btn-danger",
+      onConfirm: () => {
+        batches = batches.filter(item => item.id !== id);
 
-    if (!confirmed) {
-      return;
-    }
+        if (batches.length > 0 && !batches.some(item => item.selected)) {
+          batches[0].selected = true;
+        }
 
-    batches = batches.filter(item => item.id !== id);
-
-    if (batches.length > 0 && !batches.some(item => item.selected)) {
-      batches[0].selected = true;
-    }
-
-    saveBatches();
-    renderApp();
+        saveBatches();
+        renderApp();
+        window.HatchToast.success("Batch deleted.");
+      }
+    });
   }
 
   batchTableBody.addEventListener("click", event => {
@@ -491,14 +499,27 @@ document.addEventListener("DOMContentLoaded", () => {
     if (error) {
       formStatus.textContent = error;
       formStatus.className = "status-pill status-alert";
+      window.HatchToast.warning(error);
       return;
     }
 
-    saveBatch(batch);
-    formStatus.textContent = "Saved";
-    formStatus.className = "status-pill status-ok";
-    closeModal();
-    clearForm();
+    const isUpdate = batches.some(item => item.id === batch.id);
+
+    window.HatchModal.open({
+      title: isUpdate ? "Save batch changes?" : "Save new batch?",
+      message: `Save "${batch.name}" to your incubator batch records?`,
+      confirmText: "Save Batch",
+      cancelText: "Cancel",
+      confirmClass: "modal-btn-primary",
+      onConfirm: () => {
+        saveBatch(batch);
+        formStatus.textContent = "Saved";
+        formStatus.className = "status-pill status-ok";
+        closeModal();
+        clearForm();
+        window.HatchToast.success(isUpdate ? "Batch changes saved." : "Batch saved.");
+      }
+    });
   });
 
   renderApp();
