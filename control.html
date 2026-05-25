@@ -1,819 +1,818 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HatchAI Control</title>
-  <link rel="icon" href="fortitle.webp" type="image/webp" />
-  <style>
-    :root{
-      --orange: #D97706;
-      --dark-orange: #B45309;
-      --black: #111827;
-      --gray: #4B5563;
-      --border: #E5E7EB;
-      --white: #FFFFFF;
-      --bg-soft: #FFF7ED;
-      --green: #16A34A;
-      --red: #DC2626;
-      --yellow: #F59E0B;
-    }
-
-    @font-face {
-      font-family: 'Inter';
-      src: url('/font/inter-regular.woff2') format('woff2');
-      font-weight: 400;
-      font-style: normal;
-      font-display: swap;
-    }
-
-    @font-face {
-      font-family: 'Inter';
-      src: url('/font/inter-semibold.woff2') format('woff2');
-      font-weight: 600;
-      font-style: normal;
-      font-display: swap;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Inter', Arial, sans-serif;
-    }
-
-    body {
-      background: var(--white);
-      color: var(--black);
-    }
-
-    .navbar {
-      width: 100%;
-      background: var(--white);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    .nav-container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 14px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      position: relative;
-    }
-
-    .logo-wrap {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .logo-wrap img {
-      width: 32px;
-      height: 32px;
-      object-fit: contain;
-    }
-
-    .logo {
-      font-size: 20px;
-      font-weight: 600;
-      color: var(--black);
-    }
-
-    .logo span {
-      color: var(--orange);
-    }
-
-    .nav-links {
-      list-style: none;
-      display: flex;
-      gap: 18px;
-      align-items: center;
-    }
-
-    .nav-links li a {
-      text-decoration: none;
-      font-size: 14px;
-      color: var(--gray);
-      font-weight: 500;
-      padding: 8px 12px;
-      border-radius: 10px;
-      transition: 0.2s ease;
-      display: block;
-    }
-
-    .nav-links li a:hover {
-      background: var(--bg-soft);
-      color: var(--orange);
-    }
-
-    .nav-links li a.active {
-      background: var(--orange);
-      color: var(--white);
-    }
-
-    .nav-status {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      color: var(--gray);
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-    .dot {
-      width: 8px;
-      height: 8px;
-      background: var(--green);
-      border-radius: 50%;
-      display: inline-block;
-    }
-
-    .hamburger {
-      display: none;
-      width: 40px;
-      height: 40px;
-      border: 1px solid var(--border);
-      background: var(--white);
-      border-radius: 10px;
-      cursor: pointer;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 5px;
-      padding: 0;
-    }
-
-    .hamburger span {
-      width: 20px;
-      height: 2px;
-      background: var(--black);
-      border-radius: 999px;
-      transition: 0.3s;
-    }
-
-    .hamburger.active span:nth-child(1) {
-      transform: translateY(7px) rotate(45deg);
-    }
-
-    .hamburger.active span:nth-child(2) {
-      opacity: 0;
-    }
-
-    .hamburger.active span:nth-child(3) {
-      transform: translateY(-7px) rotate(-45deg);
-    }
-
-    .control-page {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 24px 20px 32px;
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-    }
-
-    .title h1 {
-      font-size: 30px;
-      font-weight: 600;
-      color: var(--black);
-      margin-bottom: 6px;
-    }
-
-    .title p {
-      font-size: 14px;
-      color: var(--gray);
-    }
-
-    .badge {
-      background: var(--bg-soft);
-      color: var(--orange);
-      border: 1px solid #FED7AA;
-      padding: 9px 14px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .status-pill {
-      display: inline-block;
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .status-ok {
-      background: #DCFCE7;
-      color: var(--green);
-    }
-
-    .status-off,
-    .status-alert {
-      background: #FEE2E2;
-      color: var(--red);
-    }
-
-    .status-warning {
-      background: #FEF3C7;
-      color: #A16207;
-    }
-
-    .card {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 20px;
-      box-shadow: 0 4px 16px rgba(17, 24, 39, 0.05);
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .card-title {
-      font-size: 15px;
-      color: var(--gray);
-      font-weight: 600;
-    }
-
-    .subtext {
-      font-size: 14px;
-      color: var(--gray);
-      line-height: 1.5;
-    }
-
-    .icon-box {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      background: var(--bg-soft);
-      color: var(--orange);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 17px;
-      font-weight: 600;
-      flex-shrink: 0;
-    }
-
-    .control-layout {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 18px;
-    }
-
-    .auto-card {
-      background: linear-gradient(135deg, var(--orange), var(--dark-orange));
-      color: var(--white);
-      border: none;
-      margin-bottom: 18px;
-    }
-
-    .auto-card .card-title,
-    .auto-card .subtext {
-      color: rgba(255,255,255,0.9);
-    }
-
-    .auto-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-top: 18px;
-    }
-
-    .auto-state {
-      font-size: 38px;
-      line-height: 1.1;
-      font-weight: 600;
-    }
-
-    .control-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-    }
-
-    .control-item {
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-      background: #FAFAFA;
-      transition: 0.2s ease;
-    }
-
-    .control-item.locked {
-      opacity: 0.58;
-      background: #F3F4F6;
-    }
-
-    .control-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-
-    .control-name {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--black);
-    }
-
-    .switch {
-      position: relative;
-      width: 50px;
-      height: 28px;
-      flex-shrink: 0;
-    }
-
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      inset: 0;
-      background: #D1D5DB;
-      border-radius: 999px;
-      transition: 0.2s ease;
-    }
-
-    .slider::before {
-      content: "";
-      position: absolute;
-      width: 22px;
-      height: 22px;
-      left: 3px;
-      top: 3px;
-      background: var(--white);
-      border-radius: 50%;
-      transition: 0.2s ease;
-      box-shadow: 0 2px 6px rgba(17, 24, 39, 0.18);
-    }
-
-    .switch input:checked + .slider {
-      background: var(--orange);
-    }
-
-    .switch input:checked + .slider::before {
-      transform: translateX(22px);
-    }
-
-    .switch input:disabled + .slider {
-      cursor: not-allowed;
-      background: #D1D5DB;
-    }
-
-    .switch input:disabled:checked + .slider {
-      background: #F3C28A;
-    }
-
-    .btn {
-      border: none;
-      border-radius: 999px;
-      padding: 11px 15px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    .btn-primary {
-      background: var(--orange);
-      color: var(--white);
-    }
-
-    .btn-primary:hover {
-      background: var(--dark-orange);
-    }
-
-    .btn-soft {
-      background: var(--bg-soft);
-      color: var(--orange);
-      border: 1px solid #FED7AA;
-    }
-
-    .btn-soft:hover {
-      background: #FFEDD5;
-    }
-
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .settings-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      margin-top: 18px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
-
-    .field label {
-      font-size: 13px;
-      color: var(--gray);
-      font-weight: 600;
-    }
-
-    .field input {
-      width: 100%;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 11px 12px;
-      font-size: 14px;
-      color: var(--black);
-      background: var(--white);
-      outline: none;
-      transition: 0.2s ease;
-    }
-
-    .field input:focus {
-      border-color: var(--orange);
-      box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.12);
-    }
-
-    .summary-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 14px;
-    }
-
-    .summary-list li {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      font-size: 14px;
-      color: var(--gray);
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 10px;
-    }
-
-    .summary-list li:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-
-    .summary-list strong {
-      color: var(--black);
-      font-weight: 600;
-      text-align: right;
-    }
-
-    .actions-row {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-top: 18px;
-    }
-
-    @media (max-width: 900px) {
-      .control-layout,
-      .control-grid,
-      .settings-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 700px) {
-      .hamburger {
-        display: flex;
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HatchAI Control</title>
+    <link rel="icon" href="fortitle.webp" type="image/webp" />
+    <style>
+      :root{
+        --orange: #D97706;
+        --dark-orange: #B45309;
+        --black: #111827;
+        --gray: #4B5563;
+        --border: #E5E7EB;
+        --white: #FFFFFF;
+        --bg-soft: #FFF7ED;
+        --green: #16A34A;
+        --red: #DC2626;
+        --yellow: #F59E0B;
       }
 
-      .nav-links {
-        position: absolute;
-        top: calc(100% + 8px);
-        left: 14px;
-        right: 14px;
+      @font-face {
+        font-family: 'Inter';
+        src: url('/font/inter-regular.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: 'Inter';
+        src: url('/font/inter-semibold.woff2') format('woff2');
+        font-weight: 600;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Inter', Arial, sans-serif;
+      }
+
+      body {
         background: var(--white);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        box-shadow: 0 12px 30px rgba(17, 24, 39, 0.10);
-        padding: 10px;
-        gap: 8px;
-        flex-direction: column;
-        align-items: stretch;
-        display: none;
+        color: var(--black);
       }
 
-      .nav-links.active {
-        display: flex;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .control-page {
-        padding: 18px 14px 28px;
+      .navbar {
+        width: 100%;
+        background: var(--white);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 10;
       }
 
       .nav-container {
-        padding: 14px;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 14px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        position: relative;
+      }
+
+      .logo-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .logo-wrap img {
+        width: 32px;
+        height: 32px;
+        object-fit: contain;
+      }
+
+      .logo {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--black);
+      }
+
+      .logo span {
+        color: var(--orange);
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 18px;
+        align-items: center;
+      }
+
+      .nav-links li a {
+        text-decoration: none;
+        font-size: 14px;
+        color: var(--gray);
+        font-weight: 500;
+        padding: 8px 12px;
+        border-radius: 10px;
+        transition: 0.2s ease;
+        display: block;
+      }
+
+      .nav-links li a:hover {
+        background: var(--bg-soft);
+        color: var(--orange);
+      }
+
+      .nav-links li a.active {
+        background: var(--orange);
+        color: var(--white);
+      }
+
+      .nav-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--gray);
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        background: var(--green);
+        border-radius: 50%;
+        display: inline-block;
+      }
+
+      .hamburger {
+        display: none;
+        width: 40px;
+        height: 40px;
+        border: 1px solid var(--border);
+        background: var(--white);
+        border-radius: 10px;
+        cursor: pointer;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+        padding: 0;
+      }
+
+      .hamburger span {
+        width: 20px;
+        height: 2px;
+        background: var(--black);
+        border-radius: 999px;
+        transition: 0.3s;
+      }
+
+      .hamburger.active span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+      }
+
+      .hamburger.active span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .hamburger.active span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+      }
+
+      .control-page {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px 20px 32px;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
       }
 
       .title h1 {
-        font-size: 24px;
+        font-size: 30px;
+        font-weight: 600;
+        color: var(--black);
+        margin-bottom: 6px;
+      }
+
+      .title p {
+        font-size: 14px;
+        color: var(--gray);
       }
 
       .badge {
-        width: 100%;
-        text-align: center;
+        background: var(--bg-soft);
+        color: var(--orange);
+        border: 1px solid #FED7AA;
+        padding: 9px 14px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .status-pill {
+        display: inline-block;
+        padding: 7px 12px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .status-ok {
+        background: #DCFCE7;
+        color: var(--green);
+      }
+
+      .status-off,
+      .status-alert {
+        background: #FEE2E2;
+        color: var(--red);
+      }
+
+      .status-warning {
+        background: #FEF3C7;
+        color: #A16207;
+      }
+
+      .card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 20px;
+        box-shadow: 0 4px 16px rgba(17, 24, 39, 0.05);
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+
+      .card-title {
+        font-size: 15px;
+        color: var(--gray);
+        font-weight: 600;
+      }
+
+      .subtext {
+        font-size: 14px;
+        color: var(--gray);
+        line-height: 1.5;
+      }
+
+      .icon-box {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: var(--bg-soft);
+        color: var(--orange);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 17px;
+        font-weight: 600;
+        flex-shrink: 0;
+      }
+
+      .control-layout {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 18px;
+      }
+
+      .auto-card {
+        background: linear-gradient(135deg, var(--orange), var(--dark-orange));
+        color: var(--white);
+        border: none;
+        margin-bottom: 18px;
+      }
+
+      .auto-card .card-title,
+      .auto-card .subtext {
+        color: rgba(255,255,255,0.9);
       }
 
       .auto-row {
-        align-items: flex-start;
-        flex-direction: column;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-top: 18px;
       }
 
       .auto-state {
-        font-size: 32px;
+        font-size: 38px;
+        line-height: 1.1;
+        font-weight: 600;
+      }
+
+      .control-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+      }
+
+      .control-item {
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 16px;
+        background: #FAFAFA;
+        transition: 0.2s ease;
+      }
+
+      .control-item.locked {
+        opacity: 0.58;
+        background: #F3F4F6;
+      }
+
+      .control-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .control-name {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--black);
+      }
+
+      .switch {
+        position: relative;
+        width: 50px;
+        height: 28px;
+        flex-shrink: 0;
+      }
+
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        inset: 0;
+        background: #D1D5DB;
+        border-radius: 999px;
+        transition: 0.2s ease;
+      }
+
+      .slider::before {
+        content: "";
+        position: absolute;
+        width: 22px;
+        height: 22px;
+        left: 3px;
+        top: 3px;
+        background: var(--white);
+        border-radius: 50%;
+        transition: 0.2s ease;
+        box-shadow: 0 2px 6px rgba(17, 24, 39, 0.18);
+      }
+
+      .switch input:checked + .slider {
+        background: var(--orange);
+      }
+
+      .switch input:checked + .slider::before {
+        transform: translateX(22px);
+      }
+
+      .switch input:disabled + .slider {
+        cursor: not-allowed;
+        background: #D1D5DB;
+      }
+
+      .switch input:disabled:checked + .slider {
+        background: #F3C28A;
+      }
+
+      .btn {
+        border: none;
+        border-radius: 999px;
+        padding: 11px 15px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s ease;
+      }
+
+      .btn-primary {
+        background: var(--orange);
+        color: var(--white);
+      }
+
+      .btn-primary:hover {
+        background: var(--dark-orange);
+      }
+
+      .btn-soft {
+        background: var(--bg-soft);
+        color: var(--orange);
+        border: 1px solid #FED7AA;
+      }
+
+      .btn-soft:hover {
+        background: #FFEDD5;
+      }
+
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .settings-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-top: 18px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+
+      .field label {
+        font-size: 13px;
+        color: var(--gray);
+        font-weight: 600;
+      }
+
+      .field input {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 11px 12px;
+        font-size: 14px;
+        color: var(--black);
+        background: var(--white);
+        outline: none;
+        transition: 0.2s ease;
+      }
+
+      .field input:focus {
+        border-color: var(--orange);
+        box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.12);
+      }
+
+      .summary-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 14px;
+      }
+
+      .summary-list li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        color: var(--gray);
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 10px;
+      }
+
+      .summary-list li:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+
+      .summary-list strong {
+        color: var(--black);
+        font-weight: 600;
+        text-align: right;
       }
 
       .actions-row {
-        grid-template-columns: 1fr;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-top: 18px;
       }
-    }
-  </style>
-</head>
-<body>
-  <nav class="navbar">
-    <div class="nav-container">
-      <div class="logo-wrap">
-        <img src="hatchai-logo.webp" alt="HatchAI Logo">
-        <div class="logo">Hatch<span>AI</span></div>
-      </div>
 
-      <ul class="nav-links" id="navLinks">
-        <li><a href="dashboard.html">Dashboard</a></li>
-        <li><a href="control.html" class="active">Control</a></li>
-        <li><a href="batch.html">Batch</a></li>
-        <li><a href="log.html">Logs</a></li>
-        <li><a href="settings.html">Settings</a></li>
-      </ul>
+      @media (max-width: 900px) {
+        .control-layout,
+        .control-grid,
+        .settings-grid {
+          grid-template-columns: 1fr;
+        }
+      }
 
-      <div class="nav-status">
-        <span class="dot"></span>
-        <span id="wifiStatus">Online</span>
-      </div>
-      
-      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-    </div>
-  </nav>
+      @media (max-width: 700px) {
+        .hamburger {
+          display: flex;
+        }
 
-  <main class="control-page">
-    <div class="topbar">
-      <div class="title">
-        <h1>Incubator Control</h1>
-        <p>Manage automatic mode and manual device controls</p>
-      </div>
-      <div class="badge" id="controlStatusBadge">Auto Mode: ON</div>
-    </div>
+        .nav-links {
+          position: absolute;
+          top: calc(100% + 8px);
+          left: 14px;
+          right: 14px;
+          background: var(--white);
+          border: 1px solid var(--border);
+          border-radius: 16px;
+          box-shadow: 0 12px 30px rgba(17, 24, 39, 0.10);
+          padding: 10px;
+          gap: 8px;
+          flex-direction: column;
+          align-items: stretch;
+          display: none;
+        }
 
-    <section class="auto-card card">
-      <div class="card-header">
-        <div>
-          <div class="card-title">Automatic Control Mode</div>
-          <p class="subtext">When Auto Mode is ON, HatchAI controls the bulb, fan, and egg turner automatically.</p>
-        </div>
-        <label class="switch">
-          <input type="checkbox" id="autoModeSwitch" checked>
-          <span class="slider"></span>
-        </label>
-      </div>
+        .nav-links.active {
+          display: flex;
+        }
+      }
 
-      <div class="auto-row">
-        <div>
-          <div class="auto-state" id="autoStateText">Auto ON</div>
-          <p class="subtext" id="autoDescription">Manual controls are locked while automatic mode is active.</p>
-        </div>
-        <span class="status-pill status-ok" id="lockBadge">Manual Controls Locked</span>
-      </div>
-    </section>
+      @media (max-width: 640px) {
+        .control-page {
+          padding: 18px 14px 28px;
+        }
 
-    <section class="control-layout">
-      <div>
-        <div class="control-grid">
-          <div class="control-item locked" id="bulbCard">
-            <div class="control-top">
-              <div class="control-name">Heating Bulb</div>
-              <label class="switch">
-                <input type="checkbox" id="bulbSwitch" checked disabled>
-                <span class="slider"></span>
-              </label>
-            </div>
-            <p class="subtext" id="bulbText">Auto-controlled by temperature target</p>
-          </div>
+        .nav-container {
+          padding: 14px;
+        }
 
-          <div class="control-item locked" id="fanCard">
-            <div class="control-top">
-              <div class="control-name">Fan</div>
-              <label class="switch">
-                <input type="checkbox" id="fanSwitch" checked disabled>
-                <span class="slider"></span>
-              </label>
-            </div>
-            <p class="subtext" id="fanText">Auto-controlled for air circulation</p>
-          </div>
+        .title h1 {
+          font-size: 24px;
+        }
 
-          <div class="control-item locked" id="turnerCard">
-            <div class="control-top">
-              <div class="control-name">Egg Turner</div>
-              <label class="switch">
-                <input type="checkbox" id="turnerSwitch" checked disabled>
-                <span class="slider"></span>
-              </label>
-            </div>
-            <p class="subtext" id="turnerText">Auto-controlled by turning interval</p>
-          </div>
+        .badge {
+          width: 100%;
+          text-align: center;
+        }
+
+        .auto-row {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .auto-state {
+          font-size: 32px;
+        }
+
+        .actions-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="logo-wrap">
+          <img src="hatchai-logo.webp" alt="HatchAI Logo">
+          <div class="logo">Hatch<span>AI</span></div>
         </div>
 
-        <div class="card" style="margin-top: 18px;">
-          <div class="card-header">
-            <div>
-              <div class="card-title">Control Settings</div>
-              <p class="subtext">Targets used when automatic mode is enabled</p>
-            </div>
-            <div class="icon-box">C</div>
-          </div>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="control.html" class="active">Control</a></li>
+          <li><a href="batch.html">Batch</a></li>
+          <li><a href="settings.html">Settings</a></li>
+        </ul>
 
-          <div class="settings-grid">
-            <div class="field">
-              <label for="targetTemp">Target Temperature</label>
-              <input type="text" id="targetTemp" value="37.8°C">
-            </div>
-
-            <div class="field">
-              <label for="targetHumidity">Target Humidity</label>
-              <input type="text" id="targetHumidity" value="58%">
-            </div>
-
-            <div class="field">
-              <label for="turnInterval">Turn Interval</label>
-              <input type="text" id="turnInterval" value="2 hrs">
-            </div>
-          </div>
-
-          <div class="actions-row">
-            <button class="btn btn-primary" type="button" id="saveSettingsBtn">Save Settings</button>
-            <button class="btn btn-soft" type="button" id="turnEggBtn" disabled>Turn Eggs Now</button>
-          </div>
+        <div class="nav-status">
+          <span class="dot"></span>
+          <span id="wifiStatus">Online</span>
         </div>
+        
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </nav>
+
+    <main class="control-page">
+      <div class="topbar">
+        <div class="title">
+          <h1>Incubator Control</h1>
+          <p>Manage automatic mode and manual device controls</p>
+        </div>
+        <div class="badge" id="controlStatusBadge">Auto Mode: ON</div>
       </div>
 
-      <aside class="card">
+      <section class="auto-card card">
         <div class="card-header">
           <div>
-            <div class="card-title">Control Summary</div>
-            <p class="subtext">Current device state for one incubator</p>
+            <div class="card-title">Automatic Control Mode</div>
+            <p class="subtext">When Auto Mode is ON, HatchAI controls the bulb, fan, and egg turner automatically.</p>
           </div>
-          <div class="icon-box">S</div>
+          <label class="switch">
+            <input type="checkbox" id="autoModeSwitch" checked>
+            <span class="slider"></span>
+          </label>
         </div>
 
-        <ul class="summary-list">
-          <li><span>Auto mode</span> <strong id="summaryAuto">ON</strong></li>
-          <li><span>Heating bulb</span> <strong id="summaryBulb">Auto</strong></li>
-          <li><span>Fan</span> <strong id="summaryFan">Auto</strong></li>
-          <li><span>Egg turner</span> <strong id="summaryTurner">Auto</strong></li>
-          <li><span>Manual controls</span> <strong id="summaryLock">Locked</strong></li>
-          <li><span>Last manual turn</span> <strong id="lastTurnValue">None</strong></li>
-          <li><span>Settings status</span> <strong id="settingsStatus">Saved</strong></li>
-        </ul>
-      </aside>
-    </section>
-  </main>
+        <div class="auto-row">
+          <div>
+            <div class="auto-state" id="autoStateText">Auto ON</div>
+            <p class="subtext" id="autoDescription">Manual controls are locked while automatic mode is active.</p>
+          </div>
+          <span class="status-pill status-ok" id="lockBadge">Manual Controls Locked</span>
+        </div>
+      </section>
 
-  <script>
-    const hamburger = document.getElementById("hamburger");
-    const navLinks = document.getElementById("navLinks");
+      <section class="control-layout">
+        <div>
+          <div class="control-grid">
+            <div class="control-item locked" id="bulbCard">
+              <div class="control-top">
+                <div class="control-name">Heating Bulb</div>
+                <label class="switch">
+                  <input type="checkbox" id="bulbSwitch" checked disabled>
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <p class="subtext" id="bulbText">Auto-controlled by temperature target</p>
+            </div>
 
-    hamburger.addEventListener("click", () => {
-      hamburger.classList.toggle("active");
-      navLinks.classList.toggle("active");
-      const isOpen = navLinks.classList.contains("active");
-      hamburger.setAttribute("aria-expanded", isOpen ? "true" : "false");
-    });
+            <div class="control-item locked" id="fanCard">
+              <div class="control-top">
+                <div class="control-name">Fan</div>
+                <label class="switch">
+                  <input type="checkbox" id="fanSwitch" checked disabled>
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <p class="subtext" id="fanText">Auto-controlled for air circulation</p>
+            </div>
 
-    document.querySelectorAll("#navLinks a").forEach(link => {
-      link.addEventListener("click", () => {
-        hamburger.classList.remove("active");
-        navLinks.classList.remove("active");
-        hamburger.setAttribute("aria-expanded", "false");
+            <div class="control-item locked" id="turnerCard">
+              <div class="control-top">
+                <div class="control-name">Egg Turner</div>
+                <label class="switch">
+                  <input type="checkbox" id="turnerSwitch" checked disabled>
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <p class="subtext" id="turnerText">Auto-controlled by turning interval</p>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top: 18px;">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Control Settings</div>
+                <p class="subtext">Targets used when automatic mode is enabled</p>
+              </div>
+              <div class="icon-box">C</div>
+            </div>
+
+            <div class="settings-grid">
+              <div class="field">
+                <label for="targetTemp">Target Temperature</label>
+                <input type="text" id="targetTemp" value="37.8°C">
+              </div>
+
+              <div class="field">
+                <label for="targetHumidity">Target Humidity</label>
+                <input type="text" id="targetHumidity" value="58%">
+              </div>
+
+              <div class="field">
+                <label for="turnInterval">Turn Interval</label>
+                <input type="text" id="turnInterval" value="2 hrs">
+              </div>
+            </div>
+
+            <div class="actions-row">
+              <button class="btn btn-primary" type="button" id="saveSettingsBtn">Save Settings</button>
+              <button class="btn btn-soft" type="button" id="turnEggBtn" disabled>Turn Eggs Now</button>
+            </div>
+          </div>
+        </div>
+
+        <aside class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Control Summary</div>
+              <p class="subtext">Current device state for one incubator</p>
+            </div>
+            <div class="icon-box">S</div>
+          </div>
+
+          <ul class="summary-list">
+            <li><span>Auto mode</span> <strong id="summaryAuto">ON</strong></li>
+            <li><span>Heating bulb</span> <strong id="summaryBulb">Auto</strong></li>
+            <li><span>Fan</span> <strong id="summaryFan">Auto</strong></li>
+            <li><span>Egg turner</span> <strong id="summaryTurner">Auto</strong></li>
+            <li><span>Manual controls</span> <strong id="summaryLock">Locked</strong></li>
+            <li><span>Last manual turn</span> <strong id="lastTurnValue">None</strong></li>
+            <li><span>Settings status</span> <strong id="settingsStatus">Saved</strong></li>
+          </ul>
+        </aside>
+      </section>
+    </main>
+
+    <script>
+      const hamburger = document.getElementById("hamburger");
+      const navLinks = document.getElementById("navLinks");
+
+      hamburger.addEventListener("click", () => {
+        hamburger.classList.toggle("active");
+        navLinks.classList.toggle("active");
+        const isOpen = navLinks.classList.contains("active");
+        hamburger.setAttribute("aria-expanded", isOpen ? "true" : "false");
       });
-    });
 
-    window.addEventListener("resize", () => {
-      if (window.innerWidth > 700) {
-        hamburger.classList.remove("active");
-        navLinks.classList.remove("active");
-        hamburger.setAttribute("aria-expanded", "false");
+      document.querySelectorAll("#navLinks a").forEach(link => {
+        link.addEventListener("click", () => {
+          hamburger.classList.remove("active");
+          navLinks.classList.remove("active");
+          hamburger.setAttribute("aria-expanded", "false");
+        });
+      });
+
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > 700) {
+          hamburger.classList.remove("active");
+          navLinks.classList.remove("active");
+          hamburger.setAttribute("aria-expanded", "false");
+        }
+      });
+
+      const autoModeSwitch = document.getElementById("autoModeSwitch");
+      const bulbSwitch = document.getElementById("bulbSwitch");
+      const fanSwitch = document.getElementById("fanSwitch");
+      const turnerSwitch = document.getElementById("turnerSwitch");
+      const turnEggBtn = document.getElementById("turnEggBtn");
+      const saveSettingsBtn = document.getElementById("saveSettingsBtn");
+
+      const deviceCards = [
+        document.getElementById("bulbCard"),
+        document.getElementById("fanCard"),
+        document.getElementById("turnerCard")
+      ];
+
+      function updateControlState() {
+        const autoOn = autoModeSwitch.checked;
+
+        bulbSwitch.disabled = autoOn;
+        fanSwitch.disabled = autoOn;
+        turnerSwitch.disabled = autoOn;
+        turnEggBtn.disabled = autoOn;
+
+        deviceCards.forEach(card => {
+          card.classList.toggle("locked", autoOn);
+        });
+
+        document.getElementById("controlStatusBadge").textContent = autoOn ? "Auto Mode: ON" : "Auto Mode: OFF";
+        document.getElementById("autoStateText").textContent = autoOn ? "Auto ON" : "Auto OFF";
+        document.getElementById("autoDescription").textContent = autoOn
+          ? "Manual controls are locked while automatic mode is active."
+          : "Manual controls are now available for the bulb, fan, and egg turner.";
+
+        document.getElementById("lockBadge").textContent = autoOn ? "Manual Controls Locked" : "Manual Controls Unlocked";
+        document.getElementById("lockBadge").className = autoOn ? "status-pill status-ok" : "status-pill status-warning";
+
+        document.getElementById("summaryAuto").textContent = autoOn ? "ON" : "OFF";
+        document.getElementById("summaryBulb").textContent = autoOn ? "Auto" : (bulbSwitch.checked ? "ON" : "OFF");
+        document.getElementById("summaryFan").textContent = autoOn ? "Auto" : (fanSwitch.checked ? "ON" : "OFF");
+        document.getElementById("summaryTurner").textContent = autoOn ? "Auto" : (turnerSwitch.checked ? "ON" : "OFF");
+        document.getElementById("summaryLock").textContent = autoOn ? "Locked" : "Unlocked";
+
+        document.getElementById("bulbText").textContent = autoOn
+          ? "Auto-controlled by temperature target"
+          : (bulbSwitch.checked ? "Heating bulb is ON" : "Heating bulb is OFF");
+
+        document.getElementById("fanText").textContent = autoOn
+          ? "Auto-controlled for air circulation"
+          : (fanSwitch.checked ? "Fan is ON" : "Fan is OFF");
+
+        document.getElementById("turnerText").textContent = autoOn
+          ? "Auto-controlled by turning interval"
+          : (turnerSwitch.checked ? "Egg turner is ON" : "Egg turner is OFF");
       }
-    });
 
-    const autoModeSwitch = document.getElementById("autoModeSwitch");
-    const bulbSwitch = document.getElementById("bulbSwitch");
-    const fanSwitch = document.getElementById("fanSwitch");
-    const turnerSwitch = document.getElementById("turnerSwitch");
-    const turnEggBtn = document.getElementById("turnEggBtn");
-    const saveSettingsBtn = document.getElementById("saveSettingsBtn");
+      autoModeSwitch.addEventListener("change", updateControlState);
+      bulbSwitch.addEventListener("change", updateControlState);
+      fanSwitch.addEventListener("change", updateControlState);
+      turnerSwitch.addEventListener("change", updateControlState);
 
-    const deviceCards = [
-      document.getElementById("bulbCard"),
-      document.getElementById("fanCard"),
-      document.getElementById("turnerCard")
-    ];
-
-    function updateControlState() {
-      const autoOn = autoModeSwitch.checked;
-
-      bulbSwitch.disabled = autoOn;
-      fanSwitch.disabled = autoOn;
-      turnerSwitch.disabled = autoOn;
-      turnEggBtn.disabled = autoOn;
-
-      deviceCards.forEach(card => {
-        card.classList.toggle("locked", autoOn);
+      turnEggBtn.addEventListener("click", () => {
+        document.getElementById("lastTurnValue").textContent = "Just now";
+        document.getElementById("turnerText").textContent = "Manual egg turn completed";
       });
 
-      document.getElementById("controlStatusBadge").textContent = autoOn ? "Auto Mode: ON" : "Auto Mode: OFF";
-      document.getElementById("autoStateText").textContent = autoOn ? "Auto ON" : "Auto OFF";
-      document.getElementById("autoDescription").textContent = autoOn
-        ? "Manual controls are locked while automatic mode is active."
-        : "Manual controls are now available for the bulb, fan, and egg turner.";
+      saveSettingsBtn.addEventListener("click", () => {
+        document.getElementById("settingsStatus").textContent = "Saved just now";
 
-      document.getElementById("lockBadge").textContent = autoOn ? "Manual Controls Locked" : "Manual Controls Unlocked";
-      document.getElementById("lockBadge").className = autoOn ? "status-pill status-ok" : "status-pill status-warning";
+        setTimeout(() => {
+          document.getElementById("settingsStatus").textContent = "Saved";
+        }, 1800);
+      });
 
-      document.getElementById("summaryAuto").textContent = autoOn ? "ON" : "OFF";
-      document.getElementById("summaryBulb").textContent = autoOn ? "Auto" : (bulbSwitch.checked ? "ON" : "OFF");
-      document.getElementById("summaryFan").textContent = autoOn ? "Auto" : (fanSwitch.checked ? "ON" : "OFF");
-      document.getElementById("summaryTurner").textContent = autoOn ? "Auto" : (turnerSwitch.checked ? "ON" : "OFF");
-      document.getElementById("summaryLock").textContent = autoOn ? "Locked" : "Unlocked";
-
-      document.getElementById("bulbText").textContent = autoOn
-        ? "Auto-controlled by temperature target"
-        : (bulbSwitch.checked ? "Heating bulb is ON" : "Heating bulb is OFF");
-
-      document.getElementById("fanText").textContent = autoOn
-        ? "Auto-controlled for air circulation"
-        : (fanSwitch.checked ? "Fan is ON" : "Fan is OFF");
-
-      document.getElementById("turnerText").textContent = autoOn
-        ? "Auto-controlled by turning interval"
-        : (turnerSwitch.checked ? "Egg turner is ON" : "Egg turner is OFF");
-    }
-
-    autoModeSwitch.addEventListener("change", updateControlState);
-    bulbSwitch.addEventListener("change", updateControlState);
-    fanSwitch.addEventListener("change", updateControlState);
-    turnerSwitch.addEventListener("change", updateControlState);
-
-    turnEggBtn.addEventListener("click", () => {
-      document.getElementById("lastTurnValue").textContent = "Just now";
-      document.getElementById("turnerText").textContent = "Manual egg turn completed";
-    });
-
-    saveSettingsBtn.addEventListener("click", () => {
-      document.getElementById("settingsStatus").textContent = "Saved just now";
-
-      setTimeout(() => {
-        document.getElementById("settingsStatus").textContent = "Saved";
-      }, 1800);
-    });
-
-    updateControlState();
-  </script>
-</body>
-</html>
+      updateControlState();
+    </script>
+  </body>
+  </html>

@@ -3,40 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>HatchAI Login</title>
-  <link rel="icon" href="fortitle.webp" type="image/webp" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="assets/images/fortitle.webp" type="image/webp" />
+
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/login.css" />
 </head>
 
 <body>
-  <div class="container">
-    <div id="header">
-      <img src="hatchai-logo.webp" alt="HatchAI Logo" id="header-image" />
-      <h1>Hatch<span id="spanAI">AI</span></h1>
-    </div>
-
-    <p>Incubator Control Login</p>
-
-    <form id="loginForm" method="POST">
-      <div class="input-group">
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" required />
+  <main class="login-page">
+    <section class="login-card" aria-labelledby="loginTitle">
+      <div class="login-header">
+        <img src="assets/images/hatchai-logo.webp" alt="HatchAI Logo" class="login-logo" />
+        <h1 id="loginTitle">Hatch<span>AI</span></h1>
       </div>
 
-      <div class="input-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" required />
+      <p class="login-subtitle">Incubator Control Login</p>
+
+      <form id="loginForm" class="login-form" novalidate>
+        <div class="input-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" autocomplete="username" required />
+        </div>
+
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" autocomplete="current-password" required />
+        </div>
+
+        <button type="submit" class="login-btn">Login</button>
+
+        <p id="status" class="status" aria-live="polite"></p>
+      </form>
+
+      <div class="login-footer">
+        ESP32 Local Dashboard
       </div>
+    </section>
+  </main>
 
-      <button type="submit">Login</button>
-      <p id="status" class="status"></p>
-    </form>
-
-    <div class="footer">
-      ESP32 Local Dashboard
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+  <script src="js/login.js"></script>
 </body>
 </html>

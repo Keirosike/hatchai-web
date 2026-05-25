@@ -1,0 +1,235 @@
+.settings-grid,
+.settings-form-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.settings-card-wide {
+  grid-column: span 2;
+}
+
+.settings-page .card-title {
+  color: var(--black);
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.settings-page .subtext {
+  margin-bottom: 18px;
+}
+
+.field-group {
+  margin-bottom: 16px;
+}
+
+.field-group label {
+  color: var(--black);
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.input-box,
+.textarea-box {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--black);
+  font-size: 14px;
+  margin-top: 8px;
+  outline: none;
+  padding: 12px 14px;
+  width: 100%;
+}
+
+.textarea-box {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.input-box:focus,
+.textarea-box:focus {
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.12);
+}
+
+.account-box {
+  align-items: center;
+  background: #fffdfa;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  display: flex;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding: 16px;
+}
+
+.avatar {
+  align-items: center;
+  background: var(--orange);
+  border-radius: 50%;
+  color: var(--white);
+  display: flex;
+  flex-shrink: 0;
+  font-size: 22px;
+  font-weight: 600;
+  height: 58px;
+  justify-content: center;
+  width: 58px;
+}
+
+.account-info h3 {
+  color: var(--black);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.account-info p {
+  color: var(--gray);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.password-wrap {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.password-wrap .btn {
+  flex-shrink: 0;
+  margin-top: 8px;
+}
+
+.wifi-scan-box {
+  background: #fffdfa;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin-top: 16px;
+  padding: 16px;
+}
+
+.wifi-scan-header {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.wifi-scan-header strong {
+  color: var(--black);
+  font-size: 15px;
+}
+
+.wifi-network-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+}
+
+.wifi-network-list li {
+  color: var(--gray);
+  font-size: 14px;
+}
+
+.wifi-network-list button {
+  align-items: center;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--black);
+  cursor: pointer;
+  display: flex;
+  font-weight: 600;
+  gap: 12px;
+  justify-content: space-between;
+  padding: 12px;
+  text-align: left;
+  transition: 0.2s ease;
+  width: 100%;
+}
+
+.wifi-network-list button:hover {
+  background: var(--bg-soft);
+  border-color: #FED7AA;
+  color: var(--orange);
+}
+
+.wifi-network-list span {
+  color: var(--gray);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.wifi-status-row {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 14px;
+}
+
+.wifi-info-box {
+  background: #fffdfa;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.wifi-info-box p {
+  color: var(--gray);
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.wifi-info-box h3 {
+  color: var(--black);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+#saveStatus {
+  color: var(--gray);
+  font-size: 14px;
+  margin-top: 16px;
+}
+
+@media (max-width: 900px) {
+  .settings-grid,
+  .settings-form-grid,
+  .wifi-status-row {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-card-wide {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .account-box {
+    align-items: flex-start;
+  }
+
+  .btn-row,
+  .password-wrap {
+    flex-direction: column;
+  }
+
+  .settings-page .btn,
+  .password-wrap .input-box {
+    width: 100%;
+  }
+}
