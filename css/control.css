@@ -104,7 +104,8 @@
   font-weight: 600;
 }
 
-.field input {
+.field input,
+.field select {
   width: 100%;
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -116,7 +117,12 @@
   transition: 0.2s ease;
 }
 
-.field input:focus {
+.field select {
+  cursor: pointer;
+}
+
+.field input:focus,
+.field select:focus {
   border-color: var(--orange);
   box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.12);
 }
